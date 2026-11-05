@@ -53,6 +53,21 @@
   /* Mots clés */
   .word { position:absolute; left:0; right:0; text-align:center; font-weight:900; font-size:320px; letter-spacing:-.05em; color:#fff; line-height:1; top:330px; }
   .word.g { color:var(--mint); }
+
+  .panel { position:absolute; left:930px; top:130px; width:860px; height:820px; border-radius:32px; background:var(--paper); box-shadow:0 70px 150px rgba(0,0,0,.55); padding:38px 42px; color:var(--navy); }
+  .panel h5 { font-size:26px; font-weight:800; letter-spacing:-.01em; } .panel small { font-size:16px; color:#6a6a7a; font-weight:600; }
+  .k4 { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:22px; }
+  .k4 div { background:#fff; border:1px solid var(--line); border-radius:20px; padding:18px 24px; } .k4 b { display:block; font-size:50px; font-weight:800; letter-spacing:-.03em; } .k4 span { font-size:15px; color:#6a6a7a; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
+  .chartbox { margin-top:22px; background:#fff; border:1px solid var(--line); border-radius:20px; padding:16px 24px 8px; } .chartbox svg { width:100%; height:240px; display:block; }
+  .phone { position:absolute; left:1060px; top:70px; width:430px; height:940px; border-radius:70px; background:#0c0c16; padding:18px; box-shadow:0 70px 150px rgba(0,0,0,.6), inset 0 0 0 3px #343450; }
+  .scr { width:100%; height:100%; border-radius:54px; background:var(--paper); overflow:hidden; color:var(--navy); }
+  .scr .top { height:190px; background:linear-gradient(160deg,#2f7a57,#1E3D2F); color:#fff; padding:60px 34px 0; } .scr .top h5 { font-size:30px; font-weight:800; } .scr .top p { font-size:17px; opacity:.85; margin-top:6px; }
+  .li { margin:16px 22px 0; background:#fff; border:1px solid var(--line); border-radius:22px; padding:18px 20px; display:flex; gap:16px; align-items:center; } .li .ico { width:54px; height:54px; border-radius:17px; flex:none; } .li h6 { font-size:21px; font-weight:800; } .li small { display:block; font-size:14px; color:#6a6a7a; margin-top:2px; }
+  .pb { height:8px; border-radius:6px; background:#dfe3ea; margin-top:8px; overflow:hidden; } .pb i { display:block; height:100%; width:100%; background:var(--green2); transform-origin:left; transform:scaleX(0); }
+  .cta2 { position:absolute; left:22px; right:22px; bottom:36px; height:80px; border-radius:26px; background:var(--navy); color:#fff; display:grid; place-items:center; font-size:26px; font-weight:800; }
+  .chip2 { position:absolute; padding:16px 26px; border-radius:60px; background:#fff; color:var(--navy); font-size:27px; font-weight:800; box-shadow:0 24px 60px rgba(0,0,0,.4); white-space:nowrap; } .chip2.g { background:var(--mint); }
+  .toast { position:absolute; right:40px; top:112px; padding:14px 24px; border-radius:40px; background:var(--green); color:#fff; font-size:20px; font-weight:700; box-shadow:0 20px 50px rgba(0,0,0,.35); }
+  .pill { position:absolute; left:130px; padding:12px 24px; border-radius:40px; border:1.5px solid rgba(255,255,255,.35); color:#fff; font-size:26px; font-weight:600; background:rgba(255,255,255,.07); }
   .wp { position:absolute; inset:0; }
   #hud { position:absolute; left:64px; top:52px; z-index:60; display:flex; align-items:center; gap:16px; color:#fff; opacity:0; }
   #hud .lg { width:46px; height:46px; border-radius:14px; background:linear-gradient(145deg,#2f7a57,#1E3D2F); display:grid; place-items:center; font-weight:800; font-size:27px; box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.2); } #hud span { font-weight:800; letter-spacing:.14em; font-size:19px; }
@@ -84,6 +99,7 @@
   <div class="scene" id="s3">
     <div class="win" id="win">
       <div class="bar"><div class="lg">M</div><h4>MENKO <em>HOLDING</em><small>Pilotage unique des activités</small></h4><div class="nav"><span class="a">Vue groupe</span><span>Activités</span><span>Tableaux de bord</span><span>Outils</span><span>Socle</span></div></div>
+      <div class="toast" id="toast">Aucune alerte — activités ouvertes</div>
       <div class="body">
         <div class="hello"><h2>Bonjour</h2><p>Voici où en est le groupe aujourd'hui.</p></div>
         <div class="kpis">
@@ -113,12 +129,44 @@
     <div class="abs" style="left:130px;top:310px;width:760px"><div class="big" style="font-size:118px;line-height:1.02"><span class="mask"><span class="W5">Chaque rôle</span></span><br><span class="mask"><span class="W5">voit ce qui</span></span><br><span class="mask"><span class="W5" style="color:var(--mint)">lui revient.</span></span></div></div>
     <div class="role" id="ro1" style="top:170px"><h6>Direction générale</h6><small>Vue consolidée du groupe</small><div class="tg"><div class="sw">Menko Immo<u class="t1"></u></div><div class="sw">Menko Agro<u class="t2"></u></div></div></div>
     <div class="role" id="ro2" style="top:410px"><h6>Responsable activité</h6><small>Sa seule activité</small><div class="tg"><div class="sw">Menko Immo<u class="t3"></u></div><div class="sw">Menko Agro<u class="t4"></u></div></div></div>
+    <div class="pill" id="pl1" style="top:740px">Verrouillage après échecs</div><div class="pill" id="pl2" style="top:810px">Journal des connexions</div><div class="pill" id="pl3" style="top:880px">Sauvegarde chiffrable</div>
     <div class="role" id="ro3" style="top:650px"><h6>Comptable</h6><small>Comptabilité SYSCOHADA</small><div class="tg"><div class="sw">Compta groupe<u class="t5"></u></div><div class="sw">États &amp; exports<u class="t6"></u></div></div></div>
+  </div>
+
+  <!-- Compta -->
+  <div class="scene" id="sC">
+    <div class="kick abs" style="left:130px;top:240px" id="kC">Comptabilité du groupe</div>
+    <div class="abs" style="left:130px;top:300px;width:780px"><div class="big" style="font-size:104px;line-height:1.04;white-space:nowrap"><span class="mask"><span class="WC">SYSCOHADA.</span></span><br><span class="mask"><span class="WC" style="color:var(--mint)">Consolidée.</span></span></div>
+      <div class="tag" id="tC" style="font-size:36px;margin-top:34px;max-width:700px">CA, résultats, trésorerie et bilan de chaque division, au même endroit.</div></div>
+    <div class="panel" id="pnC"><h5>Synthèse du groupe</h5><small>SYSCOHADA · toutes divisions</small>
+      <div class="k4"><div><b id="c1">0</b><span>Chiffre d'affaires</span></div><div><b id="c2">0</b><span>Résultat net</span></div><div><b id="c3">0</b><span>Trésorerie</span></div><div><b id="c4">0</b><span>Total bilan</span></div></div>
+      <div class="chartbox"><small>Évolution sur 12 mois</small>
+        <svg viewBox="0 0 780 240" preserveAspectRatio="none"><defs><linearGradient id="fg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f7a57" stop-opacity=".35"/><stop offset="1" stop-color="#2f7a57" stop-opacity="0"/></linearGradient></defs>
+          <path id="area" d="M0 200 C80 190 120 170 190 150 S300 140 360 110 S480 90 540 70 S690 40 780 22 L780 240 L0 240Z" fill="url(#fg)"/>
+          <path id="ln" d="M0 200 C80 190 120 170 190 150 S300 140 360 110 S480 90 540 70 S690 40 780 22" fill="none" stroke="#1E3D2F" stroke-width="6" stroke-linecap="round"/>
+          <circle id="dot" cx="780" cy="22" r="10" fill="#4fd39a" stroke="#1E3D2F" stroke-width="4"/></svg></div>
+    </div>
+  </div>
+
+  <!-- Portail -->
+  <div class="scene" id="sP">
+    <div class="kick abs" style="left:130px;top:300px" id="kP">Portail unique</div>
+    <div class="abs" style="left:130px;top:360px;width:800px"><div class="big" style="font-size:98px;line-height:1.04;white-space:nowrap"><span class="mask"><span class="WP">Un portail.</span></span><br><span class="mask"><span class="WP" style="color:var(--mint)">Tous les clients.</span></span></div></div>
+    <div class="phone" id="phone"><div class="scr"><div class="top"><h5>Portail Menko</h5><p>Programmes, catalogue et souscription en ligne</p></div>
+      <div class="li"><div class="ico"><svg viewBox="0 0 24 24"><path d="M3 9l9-6 9 6v11H3z"/></svg></div><div style="flex:1"><h6>Programmes</h6><small>Catalogue du groupe</small><div class="pb"><i class="pbi"></i></div></div></div>
+      <div class="li"><div class="ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8"/></svg></div><div style="flex:1"><h6>Souscription</h6><small>100 % en ligne</small><div class="pb"><i class="pbi"></i></div></div></div>
+      <div class="li"><div class="ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div style="flex:1"><h6>Espace client</h6><small>Suivi &amp; paiements</small><div class="pb"><i class="pbi"></i></div></div></div>
+      <div class="li"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg></div><div style="flex:1"><h6>Diaspora</h6><small>Depuis l'étranger</small><div class="pb"><i class="pbi"></i></div></div></div>
+      <div class="cta2">Souscrire →</div></div></div>
+    <div class="chip2 g" id="cp1" style="left:1540px;top:190px">Souscripteur</div>
+    <div class="chip2" id="cp2" style="left:1560px;top:350px">Apporteur</div>
+    <div class="chip2" id="cp3" style="left:1540px;top:510px">Locataire</div>
+    <div class="chip2 g" id="cp4" style="left:1555px;top:670px">Diaspora</div>
   </div>
 
   <!-- 6. Mots -->
   <div class="scene" id="s6" style="background:var(--green)">
-    <div class="word" id="w1">Pilotez.</div><div class="word g" id="w2">Consolidez.</div><div class="word" id="w3">Sécurisez.</div>
+    <div class="word" id="w1">Pilotez.</div><div class="word g" id="w2">Consolidez.</div><div class="word" id="w3">Sécurisez.</div><div class="word g" id="w4">Installez.</div>
   </div>
 
   <!-- 7. Fin -->
@@ -166,12 +214,15 @@
     gsap.set(w, { xPercent: -101 }); tl.to(w, { xPercent: 0, duration: .38, ease: 'power3.in', immediateRender: false }, t).to(w, { xPercent: 101, duration: .42, ease: 'power3.out', immediateRender: false }, t + .38); };
 
   /* fond et progression */
-  tl.to('#grid', { x: -96, y: -96, duration: 15, ease: 'none' }, 0);
-  tl.to('#glow', { x: 120, y: 80, duration: 15, ease: 'none' }, 0);
-  tl.to('#prog', { width: 1920, duration: 15, ease: 'none' }, 0);
+  const TOT = 30;
+  tl.to('#grid', { x: -192, y: -192, duration: TOT, ease: 'none' }, 0);
+  tl.to('#glow', { x: 220, y: 120, duration: TOT, ease: 'none' }, 0);
+  tl.to('#prog', { width: 1920, duration: TOT, ease: 'none' }, 0);
+  const slideWords = (sel, t, st) => tl.fromTo(sel, { yPercent: 115 }, { yPercent: 0, duration: .75, stagger: st || .12, ease: 'power4.out' }, t);
+  const kick = (sel, t) => tl.fromTo(sel, { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: .55 }, t);
 
-  /* 1. LOGO 0 → 2.5 */
-  show('#s1', 0, 2.55);
+  /* 1. LOGO 0 → 2.6 */
+  show('#s1', 0, 2.6);
   tl.fromTo('#logo1', { scale: 0, rotation: -120 }, { scale: 1, rotation: 0, duration: .9, ease: 'back.out(1.6)' }, .1)
     .fromTo(['#r1', '#r2', '#r3'], { scale: .7, opacity: .9 }, { scale: 6, opacity: 0, duration: 1.6, stagger: .22, ease: 'power2.out' }, .45)
     .fromTo('#shine', { x: 0 }, { x: 520, duration: .7, ease: 'power2.inOut' }, .95)
@@ -179,71 +230,94 @@
     .to('#logo1', { scale: 0, rotation: 90, duration: .35, ease: 'power3.in' }, 2.15);
   wipe(2.1);
 
-  /* 2. TITRE 2.3 → 4.7 */
-  show('#s2', 2.3, 4.75);
-  tl.fromTo('#k2', { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: .6 }, 2.55)
-    .fromTo('#s2 .L', { yPercent: 115 }, { yPercent: 0, duration: .75, stagger: .05, ease: 'power4.out' }, 2.55)
-    .fromTo('#line2', { scaleX: 0 }, { scaleX: 1, duration: .7, ease: 'power3.inOut' }, 3.2)
-    .fromTo('#tag2', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .7 }, 3.4)
-    .to('#s2', { x: -60, duration: 1.4, ease: 'none' }, 3.3);
-  tl.fromTo('#hud', { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: .6 }, 3.1);
-  wipe(4.35, '#wipe2'); wipe(4.45);
+  /* 2. TITRE 2.4 → 5.3 */
+  show('#s2', 2.4, 5.3);
+  kick('#k2', 2.65);
+  tl.fromTo('#s2 .L', { yPercent: 115 }, { yPercent: 0, duration: .75, stagger: .05, ease: 'power4.out' }, 2.65)
+    .fromTo('#line2', { scaleX: 0 }, { scaleX: 1, duration: .8, ease: 'power3.inOut' }, 3.4)
+    .fromTo('#tag2', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .8 }, 3.65)
+    .to('#s2', { x: -90, duration: 2.2, ease: 'none' }, 3.1)
+    .fromTo('#hud', { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: .6 }, 3.2);
+  wipe(4.95, '#wipe2'); wipe(5.05);
 
-  /* 3. TABLEAU DE BORD 4.6 → 8.0 */
-  show('#s3', 4.55, 8.1);
-  tl.set('#win', { transformPerspective: 2200 }, 0)
-    .fromTo('#win', { rotationX: 38, rotationY: -26, y: 220, scale: .8, opacity: 0 }, { rotationX: 8, rotationY: -8, y: 0, scale: 1, opacity: 1, duration: 1.3, ease: 'power4.out' }, 4.7)
-    .to('#win', { rotationX: 3, rotationY: 5, scale: 1.05, duration: 3.2, ease: 'sine.inOut' }, 5.9)
-    .fromTo(['#kp1', '#kp2', '#kp3'], { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: .7, stagger: .14 }, 5.35)
-    .fromTo(['#a1', '#a2', '#ch'], { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: .7, stagger: .14 }, 5.85)
-    .fromTo('#bars i', { scaleY: 0 }, { scaleY: 1, duration: .8, stagger: .05, ease: 'back.out(1.4)' }, 6.3);
+  /* 3. TABLEAU DE BORD 5.2 → 10.1 */
+  show('#s3', 5.2, 10.15);
   const c = { a: 0, b: 0, c: 0 };
-  tl.to(c, { a: 12480, b: 1.48, c: 6, duration: 1.9, ease: 'power2.out', onUpdate() { $('#n1').textContent = fmt(c.a); $('#n2').textContent = c.b.toFixed(2).replace('.', ',') + ' Md'; $('#n3').textContent = Math.round(c.c); } }, 5.45);
-  tl.to('#win', { y: -60, opacity: 0, rotationX: -14, duration: .5, ease: 'power3.in' }, 7.65);
-  wipe(7.7);
+  tl.set('#win', { transformPerspective: 2200 }, 0)
+    .fromTo('#win', { rotationX: 38, rotationY: -26, y: 220, scale: .8, opacity: 0 }, { rotationX: 8, rotationY: -8, y: 0, scale: 1, opacity: 1, duration: 1.4, ease: 'power4.out' }, 5.3)
+    .to('#win', { rotationX: 3, rotationY: 6, scale: 1.07, duration: 3.6, ease: 'sine.inOut' }, 6.6)
+    .fromTo(['#kp1', '#kp2', '#kp3'], { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: .7, stagger: .16 }, 6.0)
+    .fromTo(['#a1', '#a2', '#ch'], { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: .7, stagger: .16 }, 6.6)
+    .fromTo('#bars i', { scaleY: 0 }, { scaleY: 1, duration: .9, stagger: .06, ease: 'back.out(1.4)' }, 7.0)
+    .fromTo('#toast', { x: 120, opacity: 0, scale: .8 }, { x: 0, opacity: 1, scale: 1, duration: .6, ease: 'back.out(1.8)' }, 8.3)
+    .to('#a1', { scale: 1.05, boxShadow: '0 24px 50px rgba(30,61,47,.35)', duration: .5, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 8.7)
+    .to('#a2', { scale: 1.05, boxShadow: '0 24px 50px rgba(30,61,47,.35)', duration: .5, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 9.1);
+  tl.to(c, { a: 12480, b: 1.48, c: 6, duration: 2.2, ease: 'power2.out', onUpdate() { $('#n1').textContent = fmt(c.a); $('#n2').textContent = c.b.toFixed(2).replace('.', ',') + ' Md'; $('#n3').textContent = Math.round(c.c); } }, 6.1);
+  tl.to('#win', { y: -60, opacity: 0, rotationX: -14, duration: .5, ease: 'power3.in' }, 9.75);
+  wipe(9.8);
 
-  /* 4. SOCLE 7.9 → 10.6 */
-  show('#s4', 7.9, 10.65);
-  tl.fromTo('#k4', { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: .5 }, 8.2)
-    .fromTo('.W4', { yPercent: 115 }, { yPercent: 0, duration: .7, stagger: .12, ease: 'power4.out' }, 8.25)
-    .fromTo('.tile', { y: 140, rotationX: -50, opacity: 0, scale: .85 }, { y: 0, rotationX: 0, opacity: 1, scale: 1, duration: .7, stagger: .12, ease: 'back.out(1.3)' }, 8.3)
-    .to('.tile', { y: -8, duration: .6, yoyo: true, repeat: 1, stagger: .06, ease: 'sine.inOut' }, 9.3)
-    .to('#s4', { opacity: 0, duration: .01 }, 10.6);
-  wipe(10.3, '#wipe2'); wipe(10.4);
+  /* 4. COMPTABILITÉ 10.0 → 14.1 */
+  show('#sC', 10.0, 14.1);
+  const L = $('#ln').getTotalLength(), q = { a: 0, b: 0, c: 0, d: 0 };
+  gsap.set('#ln', { strokeDasharray: L, strokeDashoffset: L });
+  kick('#kC', 10.4); slideWords('.WC', 10.45, .15);
+  tl.fromTo('#tC', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .8 }, 11.1)
+    .fromTo('#pnC', { x: 320, opacity: 0, rotationY: -22 }, { x: 0, opacity: 1, rotationY: 0, duration: .9, ease: 'power4.out' }, 10.5)
+    .fromTo('.k4 div', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: .6, stagger: .12 }, 11.2)
+    .fromTo('#area', { opacity: 0 }, { opacity: 1, duration: 1.4, ease: 'power1.inOut' }, 11.8)
+    .to('#ln', { strokeDashoffset: 0, duration: 1.9, ease: 'power2.inOut' }, 11.7)
+    .fromTo('#dot', { scale: 0, transformOrigin: '50% 50%' }, { scale: 1, duration: .4, ease: 'back.out(3)' }, 13.4);
+  tl.to(q, { a: 2.48, b: 312, c: 640, d: 4.1, duration: 2.0, ease: 'power2.out', onUpdate() { $('#c1').textContent = q.a.toFixed(2).replace('.', ',') + ' Md'; $('#c2').textContent = Math.round(q.b) + ' M'; $('#c3').textContent = Math.round(q.c) + ' M'; $('#c4').textContent = q.d.toFixed(1).replace('.', ',') + ' Md'; } }, 11.3);
+  tl.to('#pnC', { y: 20, duration: 3, ease: 'sine.inOut' }, 11.4);
+  wipe(13.75, '#wipe2'); wipe(13.85);
 
-  /* 5. RÔLES 10.5 → 12.7 */
-  show('#s5', 10.5, 12.75);
-  tl.fromTo('#k5', { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: .5 }, 10.95)
-    .fromTo('.W5', { yPercent: 115 }, { yPercent: 0, duration: .7, stagger: .12, ease: 'power4.out' }, 11.0)
-    .fromTo('.role', { x: 300, opacity: 0, rotationY: -25 }, { x: 0, opacity: 1, rotationY: 0, duration: .7, stagger: .14, ease: 'power4.out' }, 11.05);
-  const on = (sel, t) => tl.to(sel, { backgroundColor: '#2f7a57', duration: .2 }, t).to(sel, { '--x': 1, duration: .01 }, t);
-  [['.t1', 11.55], ['.t2', 11.7], ['.t3', 11.85], ['.t5', 12.0], ['.t6', 12.1]].forEach(([s, t]) => { tl.to(s, { backgroundColor: '#2f7a57', duration: .2 }, t); });
-  tl.add(() => {}, 12.7);
-  $$('.sw u').forEach(u => { /* le bouton glisse à droite via un style inline animé */ });
-  const knob = new Map();
-  ['.t1', '.t2', '.t3', '.t5', '.t6'].forEach((s, i) => { const times = [11.55, 11.7, 11.85, 12.0, 12.1]; const el = $(s); const sty = document.createElement('style'); sty.textContent = ''; document.head.appendChild(sty);
-    const o = { v: 0 }; tl.to(o, { v: 1, duration: .25, onUpdate() { el.style.setProperty('--k', o.v); } }, times[i]); });
+  /* 5. SOCLE 14.0 → 18.0 */
+  show('#s4', 14.0, 18.05);
+  kick('#k4', 14.35); slideWords('.W4', 14.4, .12);
+  tl.fromTo('.tile', { y: 140, rotationX: -50, opacity: 0, scale: .85 }, { y: 0, rotationX: 0, opacity: 1, scale: 1, duration: .75, stagger: .16, ease: 'back.out(1.3)' }, 14.4)
+    .to('.tile', { y: -10, duration: .7, yoyo: true, repeat: 1, stagger: .08, ease: 'sine.inOut' }, 16.2);
+  wipe(17.65, '#wipe2'); wipe(17.75);
+
+  /* 6. PORTAIL 17.9 → 22.1 */
+  show('#sP', 17.9, 22.1);
+  kick('#kP', 18.25); slideWords('.WP', 18.3, .15);
+  tl.fromTo('#phone', { y: 900, rotationZ: 8, rotationY: -25, opacity: 0 }, { y: 0, rotationZ: 0, rotationY: -8, opacity: 1, duration: 1.2, ease: 'power4.out' }, 18.2)
+    .fromTo('.li', { x: 120, opacity: 0 }, { x: 0, opacity: 1, duration: .6, stagger: .14 }, 18.9)
+    .fromTo('.pbi', { scaleX: 0 }, { scaleX: 1, duration: 1.0, stagger: .2, ease: 'power2.out' }, 19.5)
+    .fromTo('.cta2', { y: 120, opacity: 0 }, { y: 0, opacity: 1, duration: .6, ease: 'back.out(1.6)' }, 20.2)
+    .fromTo(['#cp1', '#cp2', '#cp3', '#cp4'], { x: 160, opacity: 0, scale: .6 }, { x: 0, opacity: 1, scale: 1, duration: .6, stagger: .28, ease: 'back.out(1.8)' }, 19.2)
+    .to('#phone', { rotationY: 6, y: -20, duration: 3.2, ease: 'sine.inOut' }, 19.4)
+    .to(['#cp1', '#cp2', '#cp3', '#cp4'], { y: -14, duration: .8, yoyo: true, repeat: 1, stagger: .12, ease: 'sine.inOut' }, 20.6);
+  wipe(21.75, '#wipe2'); wipe(21.85);
+
+  /* 7. RÔLES & SÉCURITÉ 22.0 → 25.9 */
+  show('#s5', 22.0, 25.9);
+  kick('#k5', 22.35); slideWords('.W5', 22.4, .12);
+  tl.fromTo('.role', { x: 300, opacity: 0, rotationY: -25 }, { x: 0, opacity: 1, rotationY: 0, duration: .75, stagger: .15, ease: 'power4.out' }, 22.4)
+    .fromTo('.pill', { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: .6, stagger: .2, ease: 'back.out(1.6)' }, 24.2);
+  const knobs = [['.t1', 23.1], ['.t2', 23.25], ['.t3', 23.4], ['.t5', 23.55], ['.t6', 23.65]];
   const st = document.createElement('style'); st.textContent = '.sw u::after{ left:calc(4px + 30px * var(--k,0)) }'; document.head.appendChild(st);
-  tl.to('#s5', { opacity: 0, duration: .01 }, 12.7);
-  wipe(12.35);
+  knobs.forEach(([sel, t]) => { const el = $(sel), o = { v: 0 }; tl.to(el, { backgroundColor: '#2f7a57', duration: .25 }, t).to(o, { v: 1, duration: .25, onUpdate() { el.style.setProperty('--k', o.v); } }, t); });
+  wipe(25.55);
 
-  /* 6. MOTS 12.5 → 13.9 */
-  show('#s6', 12.5, 13.95);
-  [['#w1', 12.55], ['#w2', 12.95], ['#w3', 13.35]].forEach(([w, t]) => {
+  /* 8. MOTS 25.7 → 27.9 */
+  show('#s6', 25.7, 27.95);
+  [['#w1', 25.8], ['#w2', 26.25], ['#w3', 26.7], ['#w4', 27.15]].forEach(([w, t]) => {
     tl.fromTo(w, { opacity: 0, scale: 1.35, y: 30 }, { opacity: 1, scale: 1, y: 0, duration: .22, ease: 'power4.out' }, t)
-      .to(w, { opacity: 0, scale: .9, duration: .15, ease: 'power2.in' }, t + .36);
+      .to(w, { opacity: 0, scale: .9, duration: .15, ease: 'power2.in' }, t + .3);
   });
-  wipe(13.5, '#wipe2'); wipe(13.6);
+  wipe(27.55, '#wipe2'); wipe(27.65);
 
-  /* 7. FIN 13.7 → 15 */
-  show('#s7', 13.7, 15.01);
-  tl.fromTo('#logo7', { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: .7, ease: 'back.out(1.7)' }, 13.9)
-    .fromTo('#e1', { scale: .6, opacity: .6 }, { scale: 5, opacity: 0, duration: 1.1 }, 14.0)
-    .fromTo('#shine7', { x: 0 }, { x: 520, duration: .6, ease: 'power2.inOut' }, 14.2)
-    .fromTo('#t7', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .6 }, 14.15)
-    .fromTo('#u7', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .6 }, 14.4)
-    .to('#hud', { opacity: 0, duration: .3 }, 13.7);
-  tl.to({}, { duration: .01 }, 15);
+  /* 9. FIN 27.8 → 30 */
+  show('#s7', 27.8, 30.01);
+  tl.fromTo('#logo7', { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: .75, ease: 'back.out(1.7)' }, 28.05)
+    .fromTo('#e1', { scale: .6, opacity: .6 }, { scale: 5, opacity: 0, duration: 1.3 }, 28.15)
+    .fromTo('#shine7', { x: 0 }, { x: 520, duration: .6, ease: 'power2.inOut' }, 28.4)
+    .fromTo('#t7', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .7 }, 28.4)
+    .fromTo('#u7', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .7 }, 28.75)
+    .to('#logo7', { scale: 1.05, duration: .9, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 29.0)
+    .to('#hud', { opacity: 0, duration: .3 }, 27.8);
+  tl.to({}, { duration: .01 }, 30);
   window.seek = t => { tl.time(t, false); };
   window.__dur = tl.duration();
 })();
