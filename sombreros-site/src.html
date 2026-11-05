@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sombreros Bière</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --c1:#f5a300; --c2:#b3200f; --ink:#fff; --muted:rgba(255,255,255,.88); --dark:#231f20; --green:#4fa64b; }
+  * { box-sizing:border-box; }
+  html { scroll-snap-type:y mandatory; }
+  html.locked, html.locked body { overflow:hidden; }
+  body { margin:0; color:var(--ink); font-family:"Barlow",system-ui,sans-serif; -webkit-font-smoothing:antialiased;
+    background:radial-gradient(ellipse at 50% 45%, var(--c1) 0%, var(--c2) 85%); background-attachment:fixed; }
+  canvas#stage { position:fixed; inset:0; width:100%; height:100%; z-index:1; pointer-events:none; }
+  #heroWord, #bgWord { position:fixed; left:0; right:0; z-index:0; pointer-events:none; font-family:"Alfa Slab One","Barlow",serif; white-space:nowrap; }
+  #heroWord { top:50%; transform:translateY(-62%); text-align:center; font-size:min(14vw,28vh); line-height:1; color:#fff; letter-spacing:-.01em; text-shadow:0 6px 0 #7a1608, 0 22px 50px rgba(60,10,0,.4); }
+  #bgWord { top:30%; font-size:34vh; line-height:1; color:rgba(255,255,255,.09); }
+  section { position:relative; z-index:2; height:100vh; height:100svh; scroll-snap-align:start; display:flex; align-items:center; padding:0 7vw; }
+  section.left { justify-content:flex-start; } section.right { justify-content:flex-end; } section.center { justify-content:center; text-align:center; }
+  .panel { max-width:470px; }
+  .rv { opacity:0; }
+  .kicker { display:flex; align-items:center; gap:14px; font-size:12px; font-weight:700; letter-spacing:.28em; text-transform:uppercase; color:#fff3c4; margin-bottom:16px; }
+  .kicker::before { content:""; width:38px; height:2px; background:currentColor; }
+  h2 { font-family:"Alfa Slab One",serif; font-weight:400; font-size:clamp(36px,5.4vw,76px); line-height:1; margin:0 0 20px; text-shadow:0 4px 0 rgba(90,15,0,.45); }
+  p { font-size:clamp(15px,1.25vw,18px); line-height:1.55; color:var(--muted); margin:0 0 14px; text-shadow:0 1px 8px rgba(80,10,0,.35); }
+  .stats { display:flex; flex-direction:column; gap:12px; margin:20px 0; }
+  .stat { display:flex; align-items:baseline; gap:14px; }
+  .stat b { font-family:"Alfa Slab One",serif; font-weight:400; font-size:clamp(30px,3.4vw,50px); min-width:100px; }
+  .stat span { font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#fff3c4; font-weight:700; }
+  .specs { display:flex; gap:26px; margin-top:20px; } .specs b { display:block; font-family:"Alfa Slab One",serif; font-weight:400; font-size:28px; } .specs span { font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#fff3c4; font-weight:700; }
+  .ritual h2 span { display:block; opacity:.3; transition:opacity .5s; } .ritual h2 span.on { opacity:1; }
+  .legal { margin-top:18px; padding:14px 16px; border:2px solid rgba(255,255,255,.7); border-radius:14px; font-size:13.5px; line-height:1.45; background:rgba(35,31,32,.35); text-align:left; }
+  .legal b { display:inline-grid; place-items:center; width:42px; height:42px; border-radius:50%; background:#fff; color:#231f20; font-weight:800; margin-right:10px; vertical-align:middle; }
+  .cta { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:22px; }
+  .btn { font:700 15px "Barlow",sans-serif; color:#8a1608; background:#fff; border:0; border-radius:999px; padding:13px 26px; cursor:pointer; text-decoration:none; pointer-events:auto; transition:transform .2s; }
+  .btn.ghost { color:#fff; background:rgba(35,31,32,.35); border:1px solid rgba(255,255,255,.6); } .btn:hover { transform:translateY(-2px); }
+  .scrollhint { position:absolute; bottom:86px; left:0; right:0; text-align:center; font-size:12px; letter-spacing:.3em; text-transform:uppercase; color:var(--muted); animation:bob 1.8s ease-in-out infinite; }
+  @keyframes bob { 50% { transform:translateY(6px); } }
+  header { position:fixed; top:0; left:0; right:0; z-index:5; display:flex; justify-content:space-between; align-items:center; padding:18px 5vw; pointer-events:none; }
+  .logo { font-family:"Alfa Slab One",serif; font-size:22px; text-shadow:0 3px 0 rgba(90,15,0,.5); } .logo small { font:700 10px "Barlow",sans-serif; letter-spacing:.3em; margin-left:10px; opacity:.9; }
+  .tools { display:flex; gap:8px; pointer-events:auto; }
+  .tools button { font:700 13px "Barlow",sans-serif; color:#fff; background:rgba(35,31,32,.35); border:1px solid rgba(255,255,255,.5); border-radius:999px; padding:8px 14px; cursor:pointer; backdrop-filter:blur(6px); }
+  .tools button.on { background:#fff; color:#8a1608; }
+  nav#dots { position:fixed; right:16px; top:50%; transform:translateY(-50%); z-index:5; display:flex; flex-direction:column; gap:12px; }
+  nav#dots button { width:9px; height:9px; border-radius:50%; border:1px solid rgba(255,255,255,.9); background:transparent; padding:0; cursor:pointer; transition:.3s; }
+  nav#dots button.on { background:#fff; transform:scale(1.35); }
+  #caption { position:fixed; left:50%; bottom:30px; transform:translateX(-50%); z-index:5; width:max-content; max-width:min(720px,92vw); text-align:center; font-size:14px; line-height:1.4; color:#fff; background:rgba(35,31,32,.6); backdrop-filter:blur(8px); padding:9px 18px; border-radius:14px; opacity:0; pointer-events:none; }
+  #foot { position:fixed; left:0; right:0; bottom:6px; z-index:5; text-align:center; font-size:10.5px; letter-spacing:.04em; color:rgba(255,255,255,.85); pointer-events:none; }
+  #intro { position:fixed; inset:0; z-index:20; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; text-align:center; padding:24px; background:radial-gradient(ellipse at 50% 45%, #f5a300 0%, #8f1608 88%); }
+  #intro h1 { font-family:"Alfa Slab One",serif; font-weight:400; font-size:clamp(48px,12.5vw,130px); margin:0; line-height:1; text-shadow:0 6px 0 #7a1608; }
+  #intro p { margin:0 0 6px; max-width:440px; }
+  #intro .btn { min-width:290px; }
+  #intro small { max-width:420px; font-size:12.5px; opacity:.9; line-height:1.4; }
+  #err { position:fixed; inset:0; z-index:30; display:none; place-items:center; text-align:center; padding:24px; background:#8f1608; }
+  @media (max-width:760px) {
+    section { align-items:flex-end; padding:0 20px 96px; } section.left, section.right { justify-content:center; }
+    .panel { max-width:none; } h2 { font-size:clamp(32px,10vw,46px); margin-bottom:10px; } nav#dots { right:8px; gap:9px; }
+    .logo small { display:none; } .stats { margin:12px 0; gap:6px; } .scrollhint { bottom:100px; } p { font-size:14.5px; margin-bottom:8px; } .legal { font-size:12.5px; padding:10px 12px; margin-top:10px; } #foot { font-size:9.5px; }
+  }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div id="heroWord">SOMBREROS</div>
+<div id="bgWord">BIÈRE AROMATISÉE · FIESTA · BIÈRE AROMATISÉE · FIESTA ·</div>
+
+<header>
+  <div class="logo">Sombreros<small>BIÈRE AROMATISÉE</small></div>
+  <div class="tools"><button id="btnVoice">🔊 Voix</button><button id="btnTour">▶ Visite guidée</button></div>
+</header>
+<nav id="dots"></nav>
+<div id="caption"></div>
+<div id="foot">L'abus d'alcool est dangereux pour la santé. À consommer avec modération. Interdit aux moins de 18 ans.</div>
+
+<main>
+  <section class="center" data-i="0" style="align-items:flex-end;padding-bottom:12vh">
+    <div class="panel"><p class="rv" style="font-size:clamp(17px,1.8vw,24px);color:#fff;margin:0;font-weight:600">Bière aromatisée au goût de spiritueux mexicain · 5,5 % vol.</p></div>
+    <div class="scrollhint">Scrolle ↓</div>
+  </section>
+  <section class="right" data-i="1"><div class="panel">
+    <div class="kicker rv">01 — La fiesta</div><h2 class="rv">Goûtez à de nouvelles sensations.</h2>
+    <p class="rv">Dégustez Sombreros, un prodigieux mélange de bière au goût de spiritueux mexicain, et laissez-vous entraîner dans un monde de fiesta.</p></div></section>
+  <section class="left" data-i="2"><div class="panel">
+    <div class="kicker rv">02 — Au dos de la bouteille</div><h2 class="rv">Ce qu'il y a dedans.</h2>
+    <div class="stats">
+      <div class="stat rv"><b data-count="5.5" data-dec="1">0</b><span>% vol. d'alcool</span></div>
+      <div class="stat rv"><b data-count="63">0</b><span>kcal / 100 ml</span></div>
+      <div class="stat rv"><b data-count="7.1" data-dec="1">0</b><span>g de glucides / 100 ml</span></div></div>
+    <p class="rv">Eau, malt, houblon, sucre, acide citrique, arôme au goût de spiritueux mexicain. Sodium, lipides, protéines : 0 g.</p></div></section>
+  <section class="right" data-i="3"><div class="panel">
+    <div class="kicker rv">03 — Le format</div><h2 class="rv">50 cl de bonne humeur.</h2>
+    <p class="rv">Une bouteille en verre, une étiquette solaire et son cactus : on la reconnaît de loin.</p>
+    <div class="specs rv"><div><b>50 cl</b><span>volume</span></div><div><b>5,5 %</b><span>alcool</span></div><div><b>Verre</b><span>bouteille</span></div></div></div></section>
+  <section class="left ritual" data-i="4"><div class="panel">
+    <div class="kicker rv">04 — Le rituel</div><h2 class="rv"><span class="on">Décapsuler.</span><span>Verser.</span><span>Savourer.</span></h2><p class="rv">Un clic, un souffle : la fiesta commence.</p></div></section>
+  <section class="left ritual" data-i="5"><div class="panel">
+    <div class="kicker rv">04 — Le rituel</div><h2 class="rv"><span>Décapsuler.</span><span class="on">Verser.</span><span>Savourer.</span></h2><p class="rv">Doucement, pour une belle mousse.</p></div></section>
+  <section class="left ritual" data-i="6"><div class="panel">
+    <div class="kicker rv">04 — Le rituel</div><h2 class="rv"><span>Décapsuler.</span><span>Verser.</span><span class="on">Savourer.</span></h2><p class="rv">Bien frais ! À conserver dans un endroit frais et sec, à l'abri du soleil.</p></div></section>
+  <section class="right" data-i="7"><div class="panel">
+    <div class="kicker rv">05 — Où la trouver</div><h2 class="rv">À servir bien fraîche.</h2>
+    <div class="cta rv" style="justify-content:flex-start"><a class="btn" href="#">Où trouver Sombreros</a><a class="btn ghost" href="#">Nous contacter</a></div>
+    <div class="legal rv"><b>18+</b>L'abus d'alcool est dangereux pour la santé. À consommer avec modération. Interdit aux moins de 18 ans. Ne pas conduire après avoir bu.</div></div></section>
+</main>
+
+<div id="intro">
+  <h1>Sombreros</h1>
+  <p>Visite 3D de la bière aromatisée au goût de spiritueux mexicain, avec voix off. Active le son de ton appareil.</p>
+  <button class="btn" id="goTour">▶ Visite guidée avec voix off</button>
+  <button class="btn ghost" id="goFree">Explorer en silence</button>
+  <small>Contenu réservé aux personnes majeures (18 ans ou plus). L'abus d'alcool est dangereux pour la santé, à consommer avec modération.</small>
+</div>
+<div id="err">WebGL n'est pas disponible sur cet appareil.</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script>
+(async function () {
+  "use strict";
+  gsap.registerPlugin(ScrollTrigger);
+  const TAU = Math.PI * 2;
+  document.documentElement.classList.add('locked');
+
+  /* ============ Voix off + ambiances ============ */
+  const VO = [
+    "Sombreros. La bière aromatisée au goût de spiritueux mexicain.",
+    "Goûtez à de nouvelles sensations. Un prodigieux mélange de bière et de saveurs mexicaines : laissez-vous entraîner dans un monde de fiesta.",
+    "Au dos de la bouteille : eau, malt, houblon, sucre, acide citrique et un arôme au goût de spiritueux mexicain. Cinq virgule cinq pour cent d'alcool, soixante-trois calories pour cent millilitres.",
+    "Cinquante centilitres de fraîcheur, dans une bouteille en verre à l'étiquette solaire.",
+    "Décapsuler. Un clic, un souffle : la fiesta commence.",
+    "Verser. Doucement, pour une belle mousse.",
+    "Savourer. Bien frais, à l'abri du soleil.",
+    "Sombreros. L'abus d'alcool est dangereux pour la santé. À consommer avec modération. Interdit aux moins de dix-huit ans."
+  ];
+  const BG = [['#f5a300','#b3200f'],['#f08a00','#8f1608'],['#7a1608','#2a0903'],['#f5b000','#c2410c'],['#5a1305','#1c0702'],['#5a1305','#1c0702'],['#e07a00','#7a1608'],['#f5a300','#9c1a0a']];
+
+  /* ============ Renderer, scène ============ */
+  const canvas = document.getElementById('stage'); let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); }
+  catch (e) { document.getElementById('err').style.display = 'grid'; return; }
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.1; renderer.localClippingEnabled = true;
+  const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(30, 1, .1, 50);
+
+  (function () {
+    const env = new THREE.Scene();
+    env.add(new THREE.Mesh(new THREE.SphereGeometry(10, 32, 16), new THREE.MeshBasicMaterial({ color: 0x2a1408, side: THREE.BackSide })));
+    const box = (w, h, x, y, z, col, k) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(col).multiplyScalar(k), side: THREE.DoubleSide })); m.position.set(x, y, z); m.lookAt(0, 0, 0); env.add(m); };
+    box(7, 1.2, 0, 7, 0, 0xffffff, 9); box(1.2, 8, -6, 0, 3, 0xffffff, 8); box(1.2, 8, 6, 0, 3, 0xffe2b0, 7); box(5, 1.5, 0, -1, -7, 0xffffff, 4); box(6, .8, 0, -5, 3, 0xff9a60, 2.5); box(1, 6, 0, 0, 7, 0xffffff, 5);
+    const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(env, .02).texture; pm.dispose();
+  })();
+  scene.add(new THREE.AmbientLight(0xffffff, .25));
+  const key = new THREE.DirectionalLight(0xffffff, .8); key.position.set(2, 3, 4); scene.add(key);
+
+  const stage = new THREE.Group(), root = new THREE.Group(), floatG = new THREE.Group(), pivot = new THREE.Group(), spinG = new THREE.Group(), holder = new THREE.Group();
+  scene.add(stage); stage.add(root); root.add(floatG); floatG.add(pivot); pivot.add(spinG); spinG.add(holder); holder.position.y = -.65;   // origine = culot de la bouteille
+
+  /* ---------- Bouteille : profil de verre (r, h) ---------- */
+  const GP = [[0, 0], [.10, 0], [.135, .006], [.147, .025], [.15, .05], [.15, .66], [.1495, .69], [.145, .72], [.135, .76], [.12, .80], [.102, .84], [.088, .875], [.080, .90],
+              [.077, .95], [.074, 1.10], [.071, 1.14], [.068, 1.18], [.072, 1.215], [.076, 1.24], [.073, 1.27], [.066, 1.285], [.06, 1.292]];
+  const V = a => a.map(p => new THREE.Vector2(p[0], p[1]));
+  const rAt = h => { for (let i = 1; i < GP.length; i++) if (GP[i][1] >= h) { const a = GP[i - 1], b = GP[i], t = (h - a[1]) / (b[1] - a[1] || 1); return a[0] + (b[0] - a[0]) * t; } return GP[GP.length - 1][0]; };
+  const glassMat = new THREE.MeshPhysicalMaterial({ color: 0xdff3e8, metalness: 0, roughness: .03, transparent: true, opacity: .12, side: THREE.DoubleSide, depthWrite: false, clearcoat: 1, clearcoatRoughness: .02, envMapIntensity: 1.6 });
+  const glass = new THREE.Mesh(new THREE.LatheGeometry(V(GP), 128), glassMat); glass.renderOrder = 5; holder.add(glass);
+
+  const liqPlane = new THREE.Plane(new THREE.Vector3(0, -1, 0), 0), foamPlaneA = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), foamPlaneB = new THREE.Plane(new THREE.Vector3(0, -1, 0), 0);
+  const beerMat = new THREE.MeshStandardMaterial({ color: 0x8a3600, emissive: 0x160700, roughness: .1, metalness: 0, transparent: true, opacity: 1, side: THREE.DoubleSide, envMapIntensity: .15, clippingPlanes: [liqPlane] });
+  const foamMat = new THREE.MeshStandardMaterial({ color: 0xfff6e0, roughness: .9, metalness: 0, side: THREE.DoubleSide, clippingPlanes: [foamPlaneA, foamPlaneB] });
+  const HL = .96, liqPts = [[0, .012], [.09, .012], [.135, .02], [.141, .05]];
+  for (let h = .06; h <= HL; h += .03) liqPts.push([rAt(h) - .009, h]); liqPts.push([rAt(HL) - .009, HL], [0, HL]);
+  const beer = new THREE.Mesh(new THREE.LatheGeometry(V(liqPts), 96), beerMat); beer.renderOrder = 1; holder.add(beer);
+  const foamPts = [[0, .02], [.13, .03]]; for (let h = .06; h <= HL; h += .03) foamPts.push([rAt(h) - .012, h]); foamPts.push([rAt(HL) - .012, HL], [0, HL]);
+  const foamB = new THREE.Mesh(new THREE.LatheGeometry(V(foamPts), 96), foamMat); foamB.renderOrder = 2; holder.add(foamB);
+
+  /* ---------- Étiquettes (textures issues de tes photos) ---------- */
+  const tl_ = new THREE.TextureLoader();
+  const mkTex = src => { const t = tl_.load(src); t.encoding = THREE.sRGBEncoding; t.wrapS = THREE.RepeatWrapping; t.offset.x = .5; t.anisotropy = renderer.capabilities.getMaxAnisotropy(); return t; };
+  const labelMat = t => new THREE.MeshBasicMaterial({ map: t });
+  const bodyH0 = .232, bodyH1 = .626, neckH0 = .877, neckH1 = 1.097;
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(.1525, .1525, bodyH1 - bodyH0, 192, 1, true), labelMat(mkTex('__BODY_TEX__'))); body.position.y = (bodyH0 + bodyH1) / 2; body.renderOrder = 3; holder.add(body);
+  const neck = new THREE.Mesh(new THREE.CylinderGeometry(rAt(neckH1) + .0025, rAt(neckH0) + .0025, neckH1 - neckH0, 160, 1, true), labelMat(mkTex('__NECK_TEX__'))); neck.position.y = (neckH0 + neckH1) / 2; neck.renderOrder = 3; holder.add(neck);
+
+  /* ---------- Capsule ---------- */
+  const capG = new THREE.Group(); capG.position.set(0, 1.294, 0); holder.add(capG);
+  const crown = new THREE.CylinderGeometry(.061, .07, .017, 84, 1, false);
+  (function () { const p = crown.attributes.position; for (let i = 0; i < p.count; i++) { if (p.getY(i) < 0) { const x = p.getX(i), z = p.getZ(i), a = Math.atan2(z, x), f = 1 + .045 * Math.cos(a * 21); p.setX(i, x * f); p.setZ(i, z * f); } } crown.computeVertexNormals(); })();
+  const capMat = new THREE.MeshStandardMaterial({ color: 0xd2d6dc, metalness: 1, roughness: .28, envMapIntensity: 1.6, transparent: true });
+  capG.add(new THREE.Mesh(crown, capMat));
+  const mouth = new THREE.Object3D(); mouth.position.set(0, 1.285, 0); holder.add(mouth);
+
+  /* bulles dans la bière */
+  const NB = 70, bub = new THREE.BufferGeometry(), bpos = new Float32Array(NB * 3), bd = [];
+  for (let i = 0; i < NB; i++) bd.push({ a: Math.random() * TAU, r: Math.random() * .11, y: Math.random(), sp: .05 + Math.random() * .08 });
+  bub.setAttribute('position', new THREE.BufferAttribute(bpos, 3));
+  const bubbles = new THREE.Points(bub, new THREE.PointsMaterial({ color: 0xfff3c4, size: .011, transparent: true, opacity: .75, depthWrite: false })); bubbles.renderOrder = 4; holder.add(bubbles);
+
+  /* souffle de gaz à l'ouverture */
+  const NP = 60, puffG = new THREE.BufferGeometry(), ppos = new Float32Array(NP * 3), pd = [];
+  for (let i = 0; i < NP; i++) { const a = Math.random() * TAU, e = .2 + Math.random() * .9; pd.push({ vx: Math.cos(a) * e * .35, vy: .4 + Math.random() * .9, vz: Math.sin(a) * e * .35 }); }
+  puffG.setAttribute('position', new THREE.BufferAttribute(ppos, 3));
+  const puffMat = new THREE.PointsMaterial({ color: 0xffffff, size: .05, transparent: true, opacity: 0, depthWrite: false });
+  const puff = new THREE.Points(puffG, puffMat); puff.renderOrder = 6; puff.frustumCulled = false; stage.add(puff);
+
+  /* ---------- Verre à bière ---------- */
+  const GB = -.617, GHt = .36;
+  const glassG = new THREE.Group(); stage.add(glassG);
+  const tum = [[0, 0], [.07, 0], [.075, .006], [.078, .03]]; for (let h = .06; h <= GHt; h += .03) tum.push([.078 + (h - .03) / (GHt - .03) * .022, h]); tum.push([.1, GHt], [.094, GHt]);
+  for (let h = GHt - .03; h >= .036; h -= .03) tum.push([.071 + (h - .03) / (GHt - .03) * .02, h]); tum.push([.071, .036], [0, .036]);
+  const tumbler = new THREE.Mesh(new THREE.LatheGeometry(V(tum), 96), glassMat.clone()); tumbler.material.opacity = .2; tumbler.renderOrder = 5; glassG.add(tumbler);
+  const gLiq = new THREE.Plane(new THREE.Vector3(0, -1, 0), 0), gFoamA = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), gFoamB = new THREE.Plane(new THREE.Vector3(0, -1, 0), 0);
+  const gBeerMat = beerMat.clone(); gBeerMat.clippingPlanes = [gLiq]; const gFoamMat = foamMat.clone(); gFoamMat.clippingPlanes = [gFoamA, gFoamB];
+  const lp = [[0, .037]]; for (let h = .037; h <= GHt; h += .03) lp.push([.071 + (h - .03) / (GHt - .03) * .02 - .0025, h]); lp.push([.0905, GHt], [0, GHt]);
+  const gBeer = new THREE.Mesh(new THREE.LatheGeometry(V(lp), 80), gBeerMat); gBeer.renderOrder = 1; glassG.add(gBeer);
+  const fp = [[0, .037]]; for (let h = .037; h <= GHt; h += .03) fp.push([.071 + (h - .03) / (GHt - .03) * .02 - .004, h]); fp.push([.09, GHt], [0, GHt]);
+  const gFoam = new THREE.Mesh(new THREE.LatheGeometry(V(fp), 80), gFoamMat); gFoam.renderOrder = 2; glassG.add(gFoam);
+  const stream = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1, 16), new THREE.MeshStandardMaterial({ color: 0xc46a00, emissive: 0x3a1500, roughness: .1, transparent: true, opacity: .95 })); stage.add(stream); stream.visible = false;
+
+  const shadow = (function () {
+    const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d'), gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+    gr.addColorStop(0, 'rgba(40,5,0,.6)'); gr.addColorStop(1, 'rgba(40,5,0,0)'); g.fillStyle = gr; g.fillRect(0, 0, 128, 128);
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(1.1, 1.1), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false }));
+    m.rotation.x = -Math.PI / 2; m.position.y = -.625; stage.add(m); return m;
+  })();
+
+  /* confettis de fiesta */
+  const PN = 90, conf = new THREE.InstancedMesh(new THREE.PlaneGeometry(.055, .032), new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, roughness: .6, metalness: 0 }), PN);
+  const cd = [], dummy = new THREE.Object3D(), ccol = [0xffd21f, 0xff6a13, 0xd8321c, 0x4fa64b, 0xffffff];
+  for (let i = 0; i < PN; i++) { cd.push({ x: (Math.random() - .5) * 5, y: (Math.random() - .5) * 3.2, z: -1.2 + Math.random() * 2.6, s: .7 + Math.random() * 1.2, v: .06 + Math.random() * .13, ph: Math.random() * TAU, rs: (Math.random() - .5) * 3, ax: Math.random() * TAU }); conf.setColorAt(i, new THREE.Color(ccol[i % 5])); }
+  scene.add(conf);
+
+  /* ============ Mise en page ============ */
+  const L = { mobile: false, cx: .62, offY: 0, M: 1, dist: 3.9 };
+  function layout() {
+    const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h;
+    L.mobile = w < 760; L.cx = L.mobile ? .06 : (w / h > 1.25 ? .62 : .42); L.offY = L.mobile ? .62 : 0; L.M = L.mobile ? .7 : 1; L.dist = L.mobile ? 5.3 : (w / h < 1.25 ? 4.6 : 3.9);
+    camera.position.set(0, .1, L.dist); camera.lookAt(0, 0, 0); camera.updateProjectionMatrix(); stage.position.y = L.offY; glassG.position.set(L.cx + .32, GB, 0);
+  }
+  addEventListener('resize', () => { layout(); applyInstant(); }); layout();
+
+  /* ============ Poses ============ */
+  const state = { x: 0, y: 0, ry: 0, rx: 0, rz: 0, s: .01, spin: 1, pour: 0, fillB: .94, fillG: 0, glass: 0, shadow: 1, cap: 0, foamB: 0, puff: 0, capX: 0, capY: 0, capR: 0, capA: 1 };
+  let spinAngle = 0, cur = -1;
+  const poses = i => { const R = L.cx, M = L.M, S = 1.08 * M; const rit = L.mobile ? .64 : .95; return [
+    { x: 0, y: 0, ry: 0, rx: 0, rz: 0, s: S, spin: 1, fillB: .94, fillG: 0, glass: 0, shadow: 1, cap: 0 },
+    { x: -R, y: 0, ry: -.45, rx: 0, rz: .08, s: S * 1.05, spin: 0, fillB: .94, fillG: 0, glass: 0, shadow: 1, cap: 0 },
+    { x: R, y: 0, ry: Math.PI, rx: 0, rz: -.04, s: S * 1.05, spin: 0, fillB: .94, fillG: 0, glass: 0, shadow: 1, cap: 0 },
+    { x: -R, y: 0, ry: .2, rx: 0, rz: 0, s: S * 1.1, spin: 0, fillB: .94, fillG: 0, glass: 0, shadow: 1, cap: 0 },
+    { x: R, y: -.62 * M, ry: .1, rx: 0, rz: 0, s: 1.45 * M, spin: 0, fillB: .94, fillG: 0, glass: 0, shadow: 0, cap: 1 },
+    { x: R - .55 * rit, y: .11, ry: 0, rx: 0, rz: -2.05, s: rit, spin: 0, fillB: .55, fillG: .74, glass: 1, shadow: 0, cap: 1 },
+    { x: R - .3, y: 0, ry: .3, rx: 0, rz: 0, s: rit, spin: 0, fillB: .55, fillG: .74, glass: 1, shadow: 1, cap: 1 },
+    { x: -R, y: 0, ry: 0, rx: 0, rz: 0, s: S, spin: 1, fillB: .94, fillG: 0, glass: 0, shadow: 1, cap: 0 }][i]; };
+  function applyInstant() { if (cur < 0) return; const p = poses(cur); gsap.killTweensOf(state); Object.assign(state, p); spinAngle = 0; state.cap = p.cap; if (!p.cap) resetCap(); }
+  function resetCap() { gsap.killTweensOf(state); Object.assign(state, { capX: 0, capY: 0, capR: 0, capA: 1, puff: 0, foamB: 0 }); }
+  function go(i, dur) {
+    const p = poses(i); state.ry += spinAngle; spinAngle = 0;
+    const tgt = p.ry + Math.round((state.ry - p.ry) / TAU) * TAU, d = dur == null ? 1.5 : dur;
+    const { pour, fillB, fillG, ry, cap, ...rest } = p;
+    gsap.to(state, { ...rest, ry: tgt, duration: d, ease: 'power3.inOut', overwrite: 'auto' });
+    const pouring = i === 5;
+    gsap.to(state, { pour: pouring ? 1 : 0, duration: pouring ? .9 : .5, delay: pouring ? d * .75 : 0, ease: 'power1.inOut', overwrite: 'auto' });
+    gsap.to(state, { fillB, duration: pouring ? 4.2 : 1.2, delay: pouring ? d * .85 : 0, ease: 'none', overwrite: 'auto' });
+    gsap.to(state, { fillG, duration: pouring ? 4.2 : 1.2, delay: pouring ? d * .85 : 0, ease: 'none', overwrite: 'auto' });
+  }
+  function openCap() {
+    if (state.cap) return; state.cap = 1;
+    gsap.timeline().to(state, { capY: .55, capX: .14, capR: 7, duration: .42, ease: 'power2.out' })
+      .to(state, { capY: -.9, capX: .34, capR: 15, capA: 0, duration: .8, ease: 'power2.in' });
+    gsap.fromTo(state, { puff: 0 }, { puff: 1, duration: 1.3, ease: 'power1.out', overwrite: false });
+    gsap.to(state, { foamB: 1, duration: .8, delay: .15 });
+  }
+
+  /* ============ Audio ============ */
+  let ac = null, voiceOn = false, tour = false, voices = [];
+  function initAudio() { try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); ac.resume && ac.resume(); } catch (e) { ac = null; } }
+  function nz(sec) { const b = ac.createBuffer(1, ac.sampleRate * sec, ac.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; return b; }
+  function sfxOpen() { if (!ac || !voiceOn) return; const t = ac.currentTime;
+    const o = ac.createOscillator(), og = ac.createGain(); o.frequency.setValueAtTime(2100, t); o.frequency.exponentialRampToValueAtTime(600, t + .06); og.gain.setValueAtTime(.28, t); og.gain.exponentialRampToValueAtTime(.001, t + .1); o.connect(og).connect(ac.destination); o.start(t); o.stop(t + .12);
+    const s = ac.createBufferSource(); s.buffer = nz(1.6); const f = ac.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = 2200; const g = ac.createGain();
+    g.gain.setValueAtTime(0, t + .05); g.gain.linearRampToValueAtTime(.34, t + .1); g.gain.exponentialRampToValueAtTime(.001, t + 1.5); s.connect(f).connect(g).connect(ac.destination); s.start(t + .05); }
+  function sfxPour() { if (!ac || !voiceOn) return; const t = ac.currentTime, s = ac.createBufferSource(); s.buffer = nz(4.6); const f = ac.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 900; f.Q.value = .8; const g = ac.createGain();
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.18, t + .4); g.gain.setValueAtTime(.18, t + 3.7); g.gain.linearRampToValueAtTime(0, t + 4.5); f.frequency.linearRampToValueAtTime(2400, t + 4.3); s.connect(f).connect(g).connect(ac.destination); s.start(t); }
+
+  const cap = document.getElementById('caption');
+  function loadVoices() { voices = (window.speechSynthesis ? speechSynthesis.getVoices() : []).filter(v => /^fr/i.test(v.lang)); }
+  if (window.speechSynthesis) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+  let token = 0, advTimer = null, speakTimer = null, voTimer = null;
+  const note = m => { cap.textContent = m; gsap.to(cap, { opacity: 1, duration: .4 }); };
+  function next() { if (cur < VO.length - 1) scrollToSec(cur + 1); else setTour(false); }
+  function speak(i) { clearTimeout(speakTimer); speakTimer = setTimeout(() => doSpeak(i), 320); }
+  function doSpeak(i) {
+    const text = VO[i], my = ++token; clearTimeout(advTimer);
+    if (voiceOn) note(text); else gsap.to(cap, { opacity: 0, duration: .3 });
+    const est = text.length * 62 + 1800, done = () => { if (my !== token) return; if (tour) advTimer = setTimeout(next, 1100); };
+    if (!('speechSynthesis' in window)) { if (voiceOn) note("Voix off indisponible sur ce navigateur — lis les sous-titres. " + text); if (tour) advTimer = setTimeout(done, est + 1500); return; }
+    speechSynthesis.cancel();
+    if (!voiceOn) { if (tour) advTimer = setTimeout(done, est + 2500); return; }
+    const parts = text.match(/[^.!?:]+[.!?:]?/g).map(x => x.trim()).filter(Boolean); let failed = false;
+    parts.forEach((part, k) => {
+      const u = new SpeechSynthesisUtterance(part); u.lang = 'fr-FR'; u.rate = .96; u.pitch = 1; u.volume = 1;
+      const v = voices.find(v => /google|thomas|amelie|audrey|natural|online/i.test(v.name)) || voices[0]; if (v) u.voice = v;
+      if (k === parts.length - 1) u.onend = done;
+      u.onerror = e => { if (my !== token || failed) return; failed = true; if (e.error !== 'interrupted' && e.error !== 'canceled') note("La voix n'a pas pu démarrer. " + text); if (tour) advTimer = setTimeout(done, est); };
+      speechSynthesis.speak(u);
+    });
+    speechSynthesis.resume();
+    advTimer = setTimeout(() => { if (my === token && tour && !speechSynthesis.speaking) done(); }, est + 7000);
+  }
+
+  /* ============ Sections, UI ============ */
+  const secs = [...document.querySelectorAll('section')], dotsEl = document.getElementById('dots');
+  const heroWord = document.getElementById('heroWord'), btnVoice = document.getElementById('btnVoice'), btnTour = document.getElementById('btnTour');
+  const scrollToSec = i => secs[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+  secs.forEach((s, i) => { const b = document.createElement('button'); b.setAttribute('aria-label', 'Section ' + (i + 1)); b.onclick = () => scrollToSec(i); dotsEl.appendChild(b); });
+  const dots = [...dotsEl.children];
+  function setVoice(on) { voiceOn = on; btnVoice.classList.toggle('on', on); btnVoice.textContent = on ? '🔊 Voix' : '🔇 Voix'; if (on) initAudio(); else { token++; if ('speechSynthesis' in window) speechSynthesis.cancel(); gsap.to(cap, { opacity: 0, duration: .3 }); } }
+  function setTour(on) { tour = on; btnTour.classList.toggle('on', on); btnTour.textContent = on ? '⏸ Visite guidée' : '▶ Visite guidée'; if (on) { if (!voiceOn) setVoice(true); speak(cur); } else clearTimeout(advTimer); }
+  btnVoice.onclick = () => { setVoice(!voiceOn); if (voiceOn) speak(cur); };
+  btnTour.onclick = () => setTour(!tour);
+
+  let started = false;
+  function activate(i) {
+    if (i === cur) return; const prev = cur; cur = i;
+    if (prev >= 0) gsap.to(secs[prev].querySelectorAll('.rv'), { opacity: 0, duration: .35, overwrite: true });
+    gsap.fromTo(secs[i].querySelectorAll('.rv'), { y: 34, opacity: 0 }, { y: 0, opacity: 1, duration: .9, stagger: .09, delay: .35, ease: 'power3.out', overwrite: true });
+    dots.forEach((d, k) => d.classList.toggle('on', k === i));
+    gsap.to(document.documentElement, { '--c1': BG[i][0], '--c2': BG[i][1], duration: 1.2, ease: 'power2.out' });
+    gsap.to(heroWord, { opacity: i === 0 ? 1 : 0, scale: i === 0 ? 1 : .9, duration: 1, ease: 'power2.out' });
+    if (i < 4 || i === 7) { state.cap = 0; resetCap(); }
+    go(i, prev < 0 ? 0.01 : 1.5);
+    if (i === 2) secs[i].querySelectorAll('[data-count]').forEach(el => { const o = { v: 0 }, n = +el.dataset.count, dec = +(el.dataset.dec || 0); gsap.to(o, { v: n, duration: 1.4, delay: .5, onUpdate: () => el.textContent = o.v.toFixed(dec).replace('.', ',') }); });
+    if (i === 4 && prev !== 5 && prev !== 6) setTimeout(() => { if (cur === 4) { openCap(); sfxOpen(); } }, 1400);
+    if (i >= 5 && i < 7 && !state.cap) { state.cap = 1; Object.assign(state, { capA: 0, capY: -.9, foamB: 1 }); }
+    if (i === 5) setTimeout(() => cur === 5 && sfxPour(), 1500);
+    clearTimeout(voTimer); voTimer = setTimeout(() => speak(i), prev < 0 ? 0 : 600);
+  }
+  secs.forEach((s, i) => ScrollTrigger.create({ trigger: s, start: 'top 50%', end: 'bottom 50%', onToggle: self => { if (self.isActive && started) activate(i); } }));
+  gsap.to('#bgWord', { xPercent: -45, ease: 'none', scrollTrigger: { trigger: document.body, start: 0, end: 'max', scrub: true } });
+
+  /* ============ Boucle de rendu ============ */
+  let t0 = performance.now(), t = 0; const v3 = new THREE.Vector3();
+  renderer.setAnimationLoop(() => {
+    const now = performance.now(), dt = Math.min((now - t0) / 1000, .05); t0 = now; t += dt;
+    spinAngle += dt * .75 * state.spin;
+    root.position.set(state.x, state.y, 0); root.scale.setScalar(state.s);
+    floatG.position.y = Math.sin(t * 1.4) * .018 * (state.pour > .05 ? 0 : 1);
+    pivot.rotation.set(state.rx, 0, state.rz);
+    spinG.rotation.y = state.ry + spinAngle + Math.sin(t * .7) * .12 * (1 - state.spin);
+    shadow.position.x = state.x; shadow.material.opacity = state.shadow * (.85 + Math.sin(t * 1.4) * .1); shadow.scale.setScalar(.95 + Math.sin(t * 1.4) * .04);
+    stage.updateMatrixWorld(true);
+
+    // capsule
+    capG.visible = state.cap ? state.capA > .02 : true; capMat.opacity = state.cap ? state.capA : 1;
+    capG.position.set(state.capX, 1.294 + state.capY, 0); capG.rotation.set(0, 0, -state.capR * 0.4);
+    // bière dans la bouteille : surface horizontale dans le monde
+    const lvl = state.fillB * .92; v3.set(0, lvl, 0); holder.localToWorld(v3);
+    liqPlane.constant = v3.y; beer.visible = state.fillB > .02;
+    const fh = .028 * state.foamB; foamPlaneA.constant = -v3.y; foamPlaneB.constant = v3.y + fh; foamB.visible = state.foamB > .05 && state.fillB > .02;
+    // bulles
+    bubbles.visible = Math.abs(state.rz) < .3 && state.fillB > .3;
+    if (bubbles.visible) { const pa = bub.attributes.position, top = Math.max(.1, lvl - .04);
+      for (let i = 0; i < NB; i++) { const b = bd[i]; b.y = (b.y + dt * b.sp / Math.max(.3, top)) % 1; pa.setXYZ(i, Math.cos(b.a) * b.r * (b.y < .06 ? .6 : 1) + Math.sin(t * 2 + i) * .003, .03 + b.y * top, Math.sin(b.a) * b.r); } pa.needsUpdate = true; }
+    // souffle
+    puff.visible = state.puff > .001 && state.puff < .999;
+    if (puff.visible) { mouth.getWorldPosition(v3); stage.worldToLocal(v3); const pa = puffG.attributes.position, p = state.puff;
+      for (let i = 0; i < NP; i++) { const d = pd[i]; pa.setXYZ(i, v3.x + d.vx * p * 1.2, v3.y + d.vy * p * .9 - p * p * .1, v3.z + d.vz * p * 1.2); } pa.needsUpdate = true; puffMat.opacity = Math.sin(Math.min(1, p) * Math.PI) * .55; puffMat.size = .04 + p * .06; }
+
+    // verre
+    const vis = state.glass > .01; glassG.visible = vis; glassG.position.y = GB + (1 - state.glass) * .35; glassG.scale.setScalar(.7 + .3 * state.glass);
+    tumbler.material.opacity = .2 * state.glass; gBeerMat.opacity = state.glass; gFoamMat.opacity = state.glass; gFoamMat.transparent = true;
+    const gl = .037 + state.fillG * (GHt - .037 - .045); v3.set(0, gl, 0); glassG.localToWorld(v3);
+    gLiq.constant = v3.y; gFoamA.constant = -v3.y; gFoamB.constant = v3.y + .05 * Math.min(1, state.fillG * 3); gFoam.visible = state.fillG > .05; gBeer.visible = state.fillG > .01;
+    const gTop = v3.y;
+
+    // filet
+    mouth.getWorldPosition(v3); stage.worldToLocal(v3);
+    const len = Math.max(0, (v3.y - .005 - gTop + .0) * Math.min(1, state.pour * 1.6));
+    stream.visible = state.pour > .02 && len > .01 && state.glass > .5 && state.rz < -1.3;
+    if (stream.visible) { const r = .0085 * state.pour + Math.sin(t * 30) * .0006; stream.scale.set(r, len, r); stream.position.set(v3.x, v3.y - len / 2 - .005, 0); }
+
+    // confettis
+    for (let i = 0; i < PN; i++) { const p = cd[i]; p.y -= p.v * dt; if (p.y < -1.7) { p.y = 1.7; p.x = (Math.random() - .5) * 5; }
+      dummy.position.set(p.x + Math.sin(t * .6 + p.ph) * .15, p.y + L.offY * .5, p.z); dummy.rotation.set(t * p.rs + p.ax, t * p.rs * .7, t * p.rs * .5 + p.ph); dummy.scale.setScalar(p.s * (L.mobile ? .8 : 1)); dummy.updateMatrix(); conf.setMatrixAt(i, dummy.matrix); }
+    conf.instanceMatrix.needsUpdate = true;
+    camera.position.x = Math.sin(t * .3) * .04; camera.lookAt(0, 0, 0);
+    renderer.render(scene, camera);
+  });
+
+  /* ============ Entrée ============ */
+  function start(withVoice) {
+    started = true; const intro = document.getElementById('intro');
+    if (withVoice) { initAudio(); voiceOn = true; btnVoice.classList.add('on'); btnVoice.textContent = '🔊 Voix'; } else { voiceOn = false; btnVoice.classList.remove('on'); btnVoice.textContent = '🔇 Voix'; }
+    gsap.to(intro, { opacity: 0, duration: .8, onComplete: () => intro.remove() });
+    document.documentElement.classList.remove('locked');
+    state.y = 2.4; state.s = .6; cur = -1; activate(0);
+    gsap.fromTo(state, { y: 2.4, s: .6 }, { y: 0, s: poses(0).s, duration: 1.8, ease: 'bounce.out', overwrite: 'auto', delay: .2 });
+    gsap.from(heroWord, { yPercent: 12, duration: 1.4, ease: 'power3.out' });
+    gsap.from('header, nav#dots', { opacity: 0, duration: 1, delay: .6 });
+    if (withVoice) setTour(true);
+    ScrollTrigger.refresh();
+  }
+  document.getElementById('goTour').onclick = () => start(true);
+  document.getElementById('goFree').onclick = () => start(false);
+  window.__som = { activate, state, start, get cur() { return cur; } };
+  gsap.set(heroWord, { opacity: 0 });
+})();
+</script>
+</body>
+</html>
