@@ -2,35 +2,34 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<title>Menko Holding — Motion 15s</title>
+<title>Menko Holding — Motion 30s</title>
 <style>
-  :root { --navy:#1C1C2E; --navy2:#12121f; --green:#1E3D2F; --green2:#2f7a57; --mint:#4fd39a; --paper:#EDEDF2; --line:#E0E0EA; }
+  :root { --navy:#1C1C2E; --navy2:#12121f; --cu:#B87333; --cu2:#D4956A; --paper:#EDEDF2; --line:#E0E0EA; }
   * { box-sizing:border-box; margin:0; }
   html,body { width:1920px; height:1080px; overflow:hidden; background:#000; font-family:"Inter","Liberation Sans",sans-serif; -webkit-font-smoothing:antialiased; }
   #stage { position:relative; width:1920px; height:1080px; overflow:hidden; background:var(--navy); perspective:2200px; }
   #grid { position:absolute; inset:-200px; background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px); background-size:96px 96px; }
-  #glow { position:absolute; width:1400px; height:1400px; left:260px; top:-160px; border-radius:50%; background:radial-gradient(closest-side,rgba(47,122,87,.45),transparent); }
+  #glow { position:absolute; width:1400px; height:1400px; left:260px; top:-160px; border-radius:50%; background:radial-gradient(closest-side,rgba(184,115,51,.38),transparent); }
   .scene { position:absolute; inset:0; opacity:0; visibility:hidden; }
   .abs { position:absolute; }
   .mask { display:inline-block; overflow:hidden; vertical-align:top; }
   .mask > span { display:inline-block; will-change:transform; }
-  /* Logo */
-  .logo { width:260px; height:260px; border-radius:64px; background:linear-gradient(145deg,#2f7a57,#1E3D2F 70%); display:grid; place-items:center; box-shadow:0 30px 80px rgba(0,0,0,.45), inset 0 0 0 2px rgba(255,255,255,.18); position:relative; overflow:hidden; }
-  .logo b { color:#fff; font-weight:800; font-size:176px; letter-spacing:-.04em; line-height:1; }
-  .logo i { position:absolute; top:-50%; bottom:-50%; width:70px; left:-120px; background:rgba(255,255,255,.35); transform:rotate(20deg); filter:blur(8px); }
-  .ring { position:absolute; border:2px solid var(--mint); border-radius:50%; }
-  /* Titres */
+  .logo { width:260px; height:260px; border-radius:62px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,.5), 0 0 0 2px rgba(212,149,106,.35); position:relative; }
+  .logo img { width:100%; height:100%; display:block; }
+  .logo i { position:absolute; top:-50%; bottom:-50%; width:70px; left:-120px; background:rgba(255,255,255,.4); transform:rotate(20deg); filter:blur(8px); }
+  .ring { position:absolute; border:2px solid var(--cu2); border-radius:50%; }
   .big { font-weight:900; font-size:280px; letter-spacing:-.045em; line-height:.9; color:#fff; }
-  .big.m { color:var(--mint); }
+  .big.m { color:var(--cu2); }
   .tag { font-size:46px; font-weight:500; color:rgba(255,255,255,.82); letter-spacing:-.01em; }
-  .kick { font-size:24px; font-weight:700; letter-spacing:.34em; text-transform:uppercase; color:var(--mint); }
-  /* Fenêtre app */
+  .kick { font-size:24px; font-weight:700; letter-spacing:.34em; text-transform:uppercase; color:var(--cu2); }
+  .h { font-weight:900; letter-spacing:-.04em; color:#fff; line-height:1.03; white-space:nowrap; } .h b { color:var(--cu2); font-weight:900; }
+  /* Hub mock */
   .win { position:absolute; left:210px; top:110px; width:1500px; height:860px; border-radius:30px; background:var(--paper); box-shadow:0 70px 160px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.12); overflow:hidden; color:#111; }
   .bar { height:92px; background:var(--navy); display:flex; align-items:center; padding:0 40px; gap:20px; color:#fff; }
-  .bar .lg { width:48px; height:48px; border-radius:14px; background:linear-gradient(145deg,#2f7a57,#1E3D2F); display:grid; place-items:center; font-weight:800; font-size:28px; }
-  .bar h4 { font-size:26px; font-weight:800; letter-spacing:.04em; } .bar h4 em { font-style:normal; color:var(--mint); }
+  .bar .lg { width:52px; height:52px; border-radius:14px; overflow:hidden; } .bar .lg img { width:100%; display:block; }
+  .bar h4 { font-size:26px; font-weight:800; letter-spacing:.04em; } .bar h4 em { font-style:normal; color:var(--cu2); }
   .bar small { display:block; font-size:14px; font-weight:500; opacity:.7; margin-top:2px; letter-spacing:0; }
-  .nav { margin-left:auto; display:flex; gap:10px; } .nav span { font-size:15px; font-weight:600; padding:10px 16px; border-radius:10px; background:rgba(255,255,255,.08); } .nav span.a { background:var(--green2); }
+  .nav { margin-left:auto; display:flex; gap:10px; } .nav span { font-size:15px; font-weight:600; padding:10px 16px; border-radius:10px; background:rgba(255,255,255,.08); } .nav span.a { background:var(--cu); }
   .body { padding:34px 40px; }
   .hello h2 { font-size:40px; font-weight:800; letter-spacing:-.02em; } .hello p { font-size:18px; color:#555; margin-top:4px; }
   .kpis { display:flex; gap:22px; margin-top:26px; }
@@ -38,40 +37,23 @@
   .kpi b { display:block; font-size:54px; font-weight:800; letter-spacing:-.03em; color:var(--navy); } .kpi span { font-size:16px; color:#6a6a7a; font-weight:600; letter-spacing:.04em; text-transform:uppercase; }
   .row2 { display:flex; gap:22px; margin-top:22px; }
   .act { width:300px; background:#fff; border:1px solid var(--line); border-radius:20px; padding:22px; } .act h5 { font-size:22px; font-weight:800; margin:10px 0 4px; } .act p { font-size:14px; color:#6a6a7a; line-height:1.4; }
-  .ico { width:52px; height:52px; border-radius:16px; background:var(--green); display:grid; place-items:center; } .ico svg { width:28px; height:28px; stroke:#fff; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-  .chart { flex:1; background:#fff; border:1px solid var(--line); border-radius:20px; padding:22px 26px; position:relative; } .chart h5 { font-size:18px; font-weight:700; color:#444; } .bars { position:absolute; left:26px; right:26px; bottom:22px; height:200px; display:flex; align-items:flex-end; gap:14px; } .bars i { flex:1; background:linear-gradient(180deg,var(--green2),var(--green)); border-radius:8px 8px 3px 3px; height:100%; transform-origin:bottom; }
+  .ico { width:52px; height:52px; border-radius:16px; background:var(--cu); display:grid; place-items:center; } .ico svg { width:28px; height:28px; stroke:#fff; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .chart { flex:1; background:#fff; border:1px solid var(--line); border-radius:20px; padding:22px 26px; position:relative; } .chart h5 { font-size:18px; font-weight:700; color:#444; } .bars { position:absolute; left:26px; right:26px; bottom:22px; height:200px; display:flex; align-items:flex-end; gap:14px; } .bars i { flex:1; background:linear-gradient(180deg,var(--cu2),var(--cu)); border-radius:8px 8px 3px 3px; height:100%; transform-origin:bottom; }
+  .toast { position:absolute; right:40px; top:112px; padding:14px 24px; border-radius:40px; background:var(--navy); color:#fff; font-size:20px; font-weight:700; box-shadow:0 20px 50px rgba(0,0,0,.35); }
+  /* Captures réelles */
+  .shot { position:absolute; border-radius:22px; overflow:hidden; background:#fff; box-shadow:0 60px 140px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.14); }
+  .shot img { display:block; width:100%; will-change:transform; }
+  .badge { position:absolute; padding:16px 28px; border-radius:60px; background:#fff; color:var(--navy); font-size:27px; font-weight:800; box-shadow:0 24px 60px rgba(0,0,0,.45); white-space:nowrap; } .badge.c { background:var(--cu); color:#fff; } .badge.d { background:var(--navy); color:#fff; border:1.5px solid var(--cu2); }
   /* Tuiles */
   .tile { position:absolute; width:370px; height:210px; border-radius:26px; background:linear-gradient(160deg,#25253b,#1b1b2d); border:1px solid rgba(255,255,255,.12); padding:28px; color:#fff; box-shadow:0 30px 70px rgba(0,0,0,.4); }
-  .tile .ico { background:var(--green2); width:64px; height:64px; border-radius:20px; } .tile .ico svg { width:34px; height:34px; }
+  .tile .ico { background:var(--cu); width:64px; height:64px; border-radius:20px; } .tile .ico svg { width:34px; height:34px; }
   .tile h6 { font-size:27px; font-weight:700; margin-top:20px; letter-spacing:-.01em; line-height:1.15; }
-  .tile.hi { background:linear-gradient(160deg,#2f7a57,#1E3D2F); }
-  /* Rôles */
-  .role { position:absolute; left:960px; width:800px; height:200px; border-radius:26px; background:#fff; padding:28px 34px; color:var(--navy); box-shadow:0 30px 70px rgba(0,0,0,.4); }
-  .role h6 { font-size:34px; font-weight:800; letter-spacing:-.02em; } .role small { display:block; font-size:18px; color:#6a6a7a; margin-top:2px; }
-  .tg { position:absolute; right:34px; top:30px; display:flex; flex-direction:column; gap:12px; } .sw { display:flex; align-items:center; gap:14px; font-size:19px; font-weight:600; justify-content:flex-end; }
-  .sw u { width:64px; height:34px; border-radius:20px; background:#cfcfda; position:relative; text-decoration:none; } .sw u::after { content:""; position:absolute; width:26px; height:26px; border-radius:50%; background:#fff; top:4px; left:4px; box-shadow:0 2px 6px rgba(0,0,0,.25); }
-  /* Mots clés */
-  .word { position:absolute; left:0; right:0; text-align:center; font-weight:900; font-size:320px; letter-spacing:-.05em; color:#fff; line-height:1; top:330px; }
-  .word.g { color:var(--mint); }
-
-  .panel { position:absolute; left:930px; top:130px; width:860px; height:820px; border-radius:32px; background:var(--paper); box-shadow:0 70px 150px rgba(0,0,0,.55); padding:38px 42px; color:var(--navy); }
-  .panel h5 { font-size:26px; font-weight:800; letter-spacing:-.01em; } .panel small { font-size:16px; color:#6a6a7a; font-weight:600; }
-  .k4 { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:22px; }
-  .k4 div { background:#fff; border:1px solid var(--line); border-radius:20px; padding:18px 24px; } .k4 b { display:block; font-size:50px; font-weight:800; letter-spacing:-.03em; } .k4 span { font-size:15px; color:#6a6a7a; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
-  .chartbox { margin-top:22px; background:#fff; border:1px solid var(--line); border-radius:20px; padding:16px 24px 8px; } .chartbox svg { width:100%; height:240px; display:block; }
-  .phone { position:absolute; left:1060px; top:70px; width:430px; height:940px; border-radius:70px; background:#0c0c16; padding:18px; box-shadow:0 70px 150px rgba(0,0,0,.6), inset 0 0 0 3px #343450; }
-  .scr { width:100%; height:100%; border-radius:54px; background:var(--paper); overflow:hidden; color:var(--navy); }
-  .scr .top { height:190px; background:linear-gradient(160deg,#2f7a57,#1E3D2F); color:#fff; padding:60px 34px 0; } .scr .top h5 { font-size:30px; font-weight:800; } .scr .top p { font-size:17px; opacity:.85; margin-top:6px; }
-  .li { margin:16px 22px 0; background:#fff; border:1px solid var(--line); border-radius:22px; padding:18px 20px; display:flex; gap:16px; align-items:center; } .li .ico { width:54px; height:54px; border-radius:17px; flex:none; } .li h6 { font-size:21px; font-weight:800; } .li small { display:block; font-size:14px; color:#6a6a7a; margin-top:2px; }
-  .pb { height:8px; border-radius:6px; background:#dfe3ea; margin-top:8px; overflow:hidden; } .pb i { display:block; height:100%; width:100%; background:var(--green2); transform-origin:left; transform:scaleX(0); }
-  .cta2 { position:absolute; left:22px; right:22px; bottom:36px; height:80px; border-radius:26px; background:var(--navy); color:#fff; display:grid; place-items:center; font-size:26px; font-weight:800; }
-  .chip2 { position:absolute; padding:16px 26px; border-radius:60px; background:#fff; color:var(--navy); font-size:27px; font-weight:800; box-shadow:0 24px 60px rgba(0,0,0,.4); white-space:nowrap; } .chip2.g { background:var(--mint); }
-  .toast { position:absolute; right:40px; top:112px; padding:14px 24px; border-radius:40px; background:var(--green); color:#fff; font-size:20px; font-weight:700; box-shadow:0 20px 50px rgba(0,0,0,.35); }
-  .pill { position:absolute; left:130px; padding:12px 24px; border-radius:40px; border:1.5px solid rgba(255,255,255,.35); color:#fff; font-size:26px; font-weight:600; background:rgba(255,255,255,.07); }
-  .wp { position:absolute; inset:0; }
+  .tile.hi { background:linear-gradient(160deg,#c9894f,#8f5522); }
+  .word { position:absolute; left:0; right:0; text-align:center; font-weight:900; font-size:320px; letter-spacing:-.05em; color:#fff; line-height:1; top:330px; } .word.g { color:var(--cu2); }
   #hud { position:absolute; left:64px; top:52px; z-index:60; display:flex; align-items:center; gap:16px; color:#fff; opacity:0; }
-  #hud .lg { width:46px; height:46px; border-radius:14px; background:linear-gradient(145deg,#2f7a57,#1E3D2F); display:grid; place-items:center; font-weight:800; font-size:27px; box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.2); } #hud span { font-weight:800; letter-spacing:.14em; font-size:19px; }
-  #prog { position:absolute; left:0; bottom:0; height:6px; width:0; background:var(--mint); z-index:60; }
+  #hud .lg { width:48px; height:48px; border-radius:13px; overflow:hidden; } #hud .lg img { width:100%; display:block; } #hud span { font-weight:800; letter-spacing:.14em; font-size:19px; }
+  #prog { position:absolute; left:0; bottom:0; height:6px; width:0; background:var(--cu2); z-index:60; }
+  .wp { position:absolute; inset:0; }
 </style>
 </head>
 <body>
@@ -83,7 +65,7 @@
     <div class="ring" id="r1" style="left:830px;top:410px;width:260px;height:260px"></div>
     <div class="ring" id="r2" style="left:830px;top:410px;width:260px;height:260px"></div>
     <div class="ring" id="r3" style="left:830px;top:410px;width:260px;height:260px"></div>
-    <div class="logo abs" id="logo1" style="left:830px;top:410px"><b>M</b><i id="shine"></i></div>
+    <div class="logo abs" id="logo1" style="left:830px;top:410px"><img src="assets/logo.png"><i id="shine"></i></div>
   </div>
 
   <!-- 2. Titre -->
@@ -91,15 +73,15 @@
     <div class="kick abs" id="k2" style="left:150px;top:200px">Pilotage unique · Côte d'Ivoire</div>
     <div class="abs" style="left:136px;top:262px"><div class="big"><span class="mask"><span class="L">M</span></span><span class="mask"><span class="L">E</span></span><span class="mask"><span class="L">N</span></span><span class="mask"><span class="L">K</span></span><span class="mask"><span class="L">O</span></span></div></div>
     <div class="abs" style="left:136px;top:520px"><div class="big m"><span class="mask"><span class="L">H</span></span><span class="mask"><span class="L">O</span></span><span class="mask"><span class="L">L</span></span><span class="mask"><span class="L">D</span></span><span class="mask"><span class="L">I</span></span><span class="mask"><span class="L">N</span></span><span class="mask"><span class="L">G</span></span></div></div>
-    <div class="tag abs" id="tag2" style="left:150px;top:830px">Toutes les activités du groupe. Un seul tableau de bord.</div>
-    <div class="abs" id="line2" style="left:150px;top:790px;width:260px;height:6px;background:var(--mint);border-radius:3px;transform-origin:left"></div>
+    <div class="tag abs" id="tag2" style="left:150px;top:830px">Immobilier · Foncier · Chantier · Comptabilité</div>
+    <div class="abs" id="line2" style="left:150px;top:790px;width:260px;height:6px;background:var(--cu2);border-radius:3px;transform-origin:left"></div>
   </div>
 
-  <!-- 3. Tableau de bord -->
+  <!-- 3. Hub -->
   <div class="scene" id="s3">
     <div class="win" id="win">
-      <div class="bar"><div class="lg">M</div><h4>MENKO <em>HOLDING</em><small>Pilotage unique des activités</small></h4><div class="nav"><span class="a">Vue groupe</span><span>Activités</span><span>Tableaux de bord</span><span>Outils</span><span>Socle</span></div></div>
       <div class="toast" id="toast">Aucune alerte — activités ouvertes</div>
+      <div class="bar"><div class="lg"><img src="assets/logo.png"></div><h4>MENKO <em>HOLDING</em><small>Pilotage unique des activités</small></h4><div class="nav"><span class="a">Vue groupe</span><span>Activités</span><span>Tableaux de bord</span><span>Outils</span><span>Socle</span></div></div>
       <div class="body">
         <div class="hello"><h2>Bonjour</h2><p>Voici où en est le groupe aujourd'hui.</p></div>
         <div class="kpis">
@@ -108,7 +90,7 @@
           <div class="kpi" id="kp3"><b id="n3">0</b><span>Activités actives</span></div>
         </div>
         <div class="row2">
-          <div class="act" id="a1"><div class="ico"><svg viewBox="0 0 24 24"><path d="M3 21V8l9-5 9 5v13M9 21v-7h6v7"/></svg></div><h5>Menko Immo</h5><p>Gestion immobilière, locataires et loyers.</p></div>
+          <div class="act" id="a1"><div class="ico"><svg viewBox="0 0 24 24"><path d="M3 21V8l9-5 9 5v13M9 21v-7h6v7"/></svg></div><h5>Menko Immo</h5><p>Programmes, foncier, chantier, souscripteurs.</p></div>
           <div class="act" id="a2"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 22V10M12 10c0-4 3-7 8-7 0 5-3 8-8 7zM12 14c0-3-2-5-6-5 0 4 2 6 6 5z"/></svg></div><h5>Menko Agro</h5><p>Production agricole et suivi des cultures.</p></div>
           <div class="chart" id="ch"><h5>Lecture seule · 12 derniers mois</h5><div class="bars" id="bars"></div></div>
         </div>
@@ -116,110 +98,86 @@
     </div>
   </div>
 
-  <!-- 4. Socle commun -->
+  <!-- 4. Bilan (capture réelle) -->
   <div class="scene" id="s4">
-    <div class="kick abs" style="left:130px;top:250px" id="k4">Socle commun</div>
-    <div class="abs" style="left:130px;top:310px;width:760px"><div class="big" style="font-size:124px;line-height:1.02;white-space:nowrap"><span class="mask"><span class="W4">Un socle.</span></span><br><span class="mask"><span class="W4" style="color:var(--mint)">Toutes</span></span><br><span class="mask"><span class="W4" style="color:var(--mint)">les activités.</span></span></div></div>
+    <div class="kick abs" style="left:130px;top:280px" id="k4">Comptabilité</div>
+    <div class="abs" style="left:130px;top:340px"><div class="h" style="font-size:84px"><span class="mask"><span class="W4">SYSCOHADA.</span></span><br><span class="mask"><span class="W4"><b>Bilan</b></span></span><br><span class="mask"><span class="W4"><b>équilibré.</b></span></span></div></div>
+    <div class="shot" id="sh4" style="left:740px;top:110px;width:1120px;height:800px"><img id="im4" src="assets/bilan-page.png" style="transform-origin:72% 88%"></div>
+    <div class="badge c" id="b41" style="left:1160px;top:60px">Total actif 1 430 000 FCFA</div>
+    <div class="badge d" id="b42" style="left:1360px;top:930px">✔ Actif = Passif</div>
+  </div>
+
+  <!-- 5. Saisie + validations (captures réelles) -->
+  <div class="scene" id="s5">
+    <div class="kick abs" style="left:130px;top:280px" id="k5">Contrôle intégré</div>
+    <div class="abs" style="left:130px;top:340px"><div class="h" style="font-size:84px"><span class="mask"><span class="W5">Partie double.</span></span><br><span class="mask"><span class="W5"><b>Validations.</b></span></span></div>
+      <div class="tag" id="t5" style="font-size:34px;margin-top:30px;max-width:560px">Chaque écriture est équilibrée, chaque dépense est validée.</div></div>
+    <div class="shot" id="sh5a" style="left:690px;top:110px;width:900px;height:640px"><img src="assets/saisie-tiers.png"></div>
+    <div class="shot" id="sh5b" style="left:1290px;top:380px;width:520px;height:560px"><img id="im5b" src="assets/validations-pagination.png" style="width:760px"></div>
+    <div class="badge c" id="b51" style="left:700px;top:770px">Proposer les comptes (IA)</div>
+    <div class="badge d" id="b52" style="left:1000px;top:870px">✔ Débit = Crédit</div>
+  </div>
+
+  <!-- 6. Foncier (capture réelle) -->
+  <div class="scene" id="s6">
+    <div class="kick abs" style="left:130px;top:300px" id="k6">Foncier</div>
+    <div class="abs" style="left:130px;top:360px"><div class="h" style="font-size:84px"><span class="mask"><span class="W6">Du terrain</span></span><br><span class="mask"><span class="W6"><b>à l'attestation.</b></span></span></div>
+      <div class="tag" id="t6" style="font-size:34px;margin-top:30px;max-width:640px">Chaque phase suivie : recherche, enquête foncière, certificat foncier.</div></div>
+    <div class="shot" id="sh6" style="left:1000px;top:70px;width:780px;height:940px"><img id="im6" src="assets/foncier-rural-bleu.png" style="width:1000px;max-width:none;margin-left:-60px"></div>
+    <div class="badge c" id="b61" style="left:880px;top:200px">Phase 1</div>
+    <div class="badge" id="b62" style="left:880px;top:420px">Phase 2</div>
+    <div class="badge d" id="b63" style="left:880px;top:640px">Phase 3</div>
+  </div>
+
+  <!-- 7. Modules -->
+  <div class="scene" id="s7">
+    <div class="kick abs" style="left:130px;top:250px" id="k7">Tous les métiers</div>
+    <div class="abs" style="left:130px;top:310px"><div class="h" style="font-size:112px"><span class="mask"><span class="W7">Un seul</span></span><br><span class="mask"><span class="W7"><b>pilotage.</b></span></span></div></div>
     <div id="tiles"></div>
   </div>
 
-  <!-- 5. Rôles -->
-  <div class="scene" id="s5">
-    <div class="kick abs" style="left:130px;top:250px" id="k5">Accès &amp; sécurité</div>
-    <div class="abs" style="left:130px;top:310px;width:760px"><div class="big" style="font-size:118px;line-height:1.02"><span class="mask"><span class="W5">Chaque rôle</span></span><br><span class="mask"><span class="W5">voit ce qui</span></span><br><span class="mask"><span class="W5" style="color:var(--mint)">lui revient.</span></span></div></div>
-    <div class="role" id="ro1" style="top:170px"><h6>Direction générale</h6><small>Vue consolidée du groupe</small><div class="tg"><div class="sw">Menko Immo<u class="t1"></u></div><div class="sw">Menko Agro<u class="t2"></u></div></div></div>
-    <div class="role" id="ro2" style="top:410px"><h6>Responsable activité</h6><small>Sa seule activité</small><div class="tg"><div class="sw">Menko Immo<u class="t3"></u></div><div class="sw">Menko Agro<u class="t4"></u></div></div></div>
-    <div class="pill" id="pl1" style="top:740px">Verrouillage après échecs</div><div class="pill" id="pl2" style="top:810px">Journal des connexions</div><div class="pill" id="pl3" style="top:880px">Sauvegarde chiffrable</div>
-    <div class="role" id="ro3" style="top:650px"><h6>Comptable</h6><small>Comptabilité SYSCOHADA</small><div class="tg"><div class="sw">Compta groupe<u class="t5"></u></div><div class="sw">États &amp; exports<u class="t6"></u></div></div></div>
+  <!-- 8. Mots -->
+  <div class="scene" id="s8" style="background:#8f5522">
+    <div class="word" id="w1">Pilotez.</div><div class="word" id="w2">Consolidez.</div><div class="word" id="w3">Sécurisez.</div>
   </div>
 
-  <!-- Compta -->
-  <div class="scene" id="sC">
-    <div class="kick abs" style="left:130px;top:240px" id="kC">Comptabilité du groupe</div>
-    <div class="abs" style="left:130px;top:300px;width:780px"><div class="big" style="font-size:104px;line-height:1.04;white-space:nowrap"><span class="mask"><span class="WC">SYSCOHADA.</span></span><br><span class="mask"><span class="WC" style="color:var(--mint)">Consolidée.</span></span></div>
-      <div class="tag" id="tC" style="font-size:36px;margin-top:34px;max-width:700px">CA, résultats, trésorerie et bilan de chaque division, au même endroit.</div></div>
-    <div class="panel" id="pnC"><h5>Synthèse du groupe</h5><small>SYSCOHADA · toutes divisions</small>
-      <div class="k4"><div><b id="c1">0</b><span>Chiffre d'affaires</span></div><div><b id="c2">0</b><span>Résultat net</span></div><div><b id="c3">0</b><span>Trésorerie</span></div><div><b id="c4">0</b><span>Total bilan</span></div></div>
-      <div class="chartbox"><small>Évolution sur 12 mois</small>
-        <svg viewBox="0 0 780 240" preserveAspectRatio="none"><defs><linearGradient id="fg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f7a57" stop-opacity=".35"/><stop offset="1" stop-color="#2f7a57" stop-opacity="0"/></linearGradient></defs>
-          <path id="area" d="M0 200 C80 190 120 170 190 150 S300 140 360 110 S480 90 540 70 S690 40 780 22 L780 240 L0 240Z" fill="url(#fg)"/>
-          <path id="ln" d="M0 200 C80 190 120 170 190 150 S300 140 360 110 S480 90 540 70 S690 40 780 22" fill="none" stroke="#1E3D2F" stroke-width="6" stroke-linecap="round"/>
-          <circle id="dot" cx="780" cy="22" r="10" fill="#4fd39a" stroke="#1E3D2F" stroke-width="4"/></svg></div>
-    </div>
-  </div>
-
-  <!-- Portail -->
-  <div class="scene" id="sP">
-    <div class="kick abs" style="left:130px;top:300px" id="kP">Portail unique</div>
-    <div class="abs" style="left:130px;top:360px;width:800px"><div class="big" style="font-size:98px;line-height:1.04;white-space:nowrap"><span class="mask"><span class="WP">Un portail.</span></span><br><span class="mask"><span class="WP" style="color:var(--mint)">Tous les clients.</span></span></div></div>
-    <div class="phone" id="phone"><div class="scr"><div class="top"><h5>Portail Menko</h5><p>Programmes, catalogue et souscription en ligne</p></div>
-      <div class="li"><div class="ico"><svg viewBox="0 0 24 24"><path d="M3 9l9-6 9 6v11H3z"/></svg></div><div style="flex:1"><h6>Programmes</h6><small>Catalogue du groupe</small><div class="pb"><i class="pbi"></i></div></div></div>
-      <div class="li"><div class="ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8"/></svg></div><div style="flex:1"><h6>Souscription</h6><small>100 % en ligne</small><div class="pb"><i class="pbi"></i></div></div></div>
-      <div class="li"><div class="ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div style="flex:1"><h6>Espace client</h6><small>Suivi &amp; paiements</small><div class="pb"><i class="pbi"></i></div></div></div>
-      <div class="li"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg></div><div style="flex:1"><h6>Diaspora</h6><small>Depuis l'étranger</small><div class="pb"><i class="pbi"></i></div></div></div>
-      <div class="cta2">Souscrire →</div></div></div>
-    <div class="chip2 g" id="cp1" style="left:1540px;top:190px">Souscripteur</div>
-    <div class="chip2" id="cp2" style="left:1560px;top:350px">Apporteur</div>
-    <div class="chip2" id="cp3" style="left:1540px;top:510px">Locataire</div>
-    <div class="chip2 g" id="cp4" style="left:1555px;top:670px">Diaspora</div>
-  </div>
-
-  <!-- 6. Mots -->
-  <div class="scene" id="s6" style="background:var(--green)">
-    <div class="word" id="w1">Pilotez.</div><div class="word g" id="w2">Consolidez.</div><div class="word" id="w3">Sécurisez.</div><div class="word g" id="w4">Installez.</div>
-  </div>
-
-  <!-- 7. Fin -->
-  <div class="scene" id="s7">
+  <!-- 9. Fin -->
+  <div class="scene" id="s9">
     <div class="ring" id="e1" style="left:790px;top:230px;width:340px;height:340px;opacity:.5"></div>
-    <div class="logo abs" id="logo7" style="left:830px;top:270px"><b>M</b><i id="shine7"></i></div>
-    <div class="abs" id="t7" style="left:0;right:0;top:600px;text-align:center"><div style="font-size:112px;font-weight:900;letter-spacing:-.04em;color:#fff">MENKO <span style="color:var(--mint)">HOLDING</span></div></div>
-    <div class="abs tag" id="u7" style="left:0;right:0;top:760px;text-align:center;font-size:40px">Côte d'Ivoire · erp-menko-holding.com</div>
+    <div class="logo abs" id="logo9" style="left:830px;top:270px"><img src="assets/logo.png"><i id="shine9"></i></div>
+    <div class="abs" id="t9" style="left:0;right:0;top:600px;text-align:center"><div style="font-size:112px;font-weight:900;letter-spacing:-.04em;color:#fff">MENKO <span style="color:var(--cu2)">HOLDING</span></div></div>
+    <div class="abs tag" id="u9" style="left:0;right:0;top:760px;text-align:center;font-size:40px">Côte d'Ivoire · erp-menko-holding.com</div>
   </div>
 
-  <div id="hud"><div class="lg">M</div><span>MENKO HOLDING</span></div>
+  <div id="hud"><div class="lg"><img src="assets/logo.png"></div><span>MENKO HOLDING</span></div>
   <div id="prog"></div>
 </div>
 
 <script src="gsap.min.js"></script>
 <script>
 (function () {
-  const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+  const $ = s => document.querySelector(s);
   const ICON = {
-    users: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+    home: '<path d="M3 21V8l9-5 9 5v13M9 21v-7h6v7"/>', map: '<path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4z"/><path d="M8 2v16M16 6v16"/>',
+    build: '<path d="M2 20h20M5 20V9l7-5 7 5v11M9 20v-6h6v6"/>', cash: '<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/>',
     book: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
-    card: '<rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/>',
-    file: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/>',
-    bell: '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/>',
-    shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
-    chart: '<path d="M18 20V10M12 20V4M6 20v-6"/>',
-    down: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>'
+    users: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+    globe: '<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/>', car: '<path d="M5 17h14M3 13l2-6h14l2 6v4H3zM7 17v2M17 17v2"/>'
   };
-  // barres du graphique
-  const hs = [38, 46, 42, 55, 61, 58, 70, 66, 78, 84, 80, 96];
-  hs.forEach(h => { const i = document.createElement('i'); i.style.height = h * 1.9 + 'px'; $('#bars').appendChild(i); });
-  // tuiles du socle
-  const T = [['users', 'Utilisateurs, rôles & permissions'], ['book', 'Comptabilité SYSCOHADA consolidée'], ['card', 'Trésorerie & caisses'], ['file', 'Facturation & documents'],
-             ['bell', 'Notifications'], ['shield', "Journal d'audit"], ['chart', 'Tableau de bord consolidé'], ['down', 'Exports PDF / Excel']];
-  const tiles = $('#tiles');
-  T.forEach((t, i) => { const d = document.createElement('div'); d.className = 'tile' + (i === 1 ? ' hi' : ''); d.style.left = (870 + (i % 2) * 400) + 'px'; d.style.top = (110 + Math.floor(i / 2) * 235) + 'px';
-    d.innerHTML = `<div class="ico"><svg viewBox="0 0 24 24" style="fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round">${ICON[t[0]]}</svg></div><h6>${t[1]}</h6>`; tiles.appendChild(d); });
+  [38, 46, 42, 55, 61, 58, 70, 66, 78, 84, 80, 96].forEach(h => { const i = document.createElement('i'); i.style.height = h * 1.9 + 'px'; $('#bars').appendChild(i); });
+  const T = [['home', 'Programmes immobiliers'], ['map', 'Foncier & attestations'], ['build', 'Chantier & DQE'], ['cash', 'Caisse & paiements'], ['book', 'Comptabilité SYSCOHADA'], ['users', 'Paie & CRM'], ['globe', 'Portail & diaspora'], ['car', 'Parc auto & achats']];
+  T.forEach((t, i) => { const d = document.createElement('div'); d.className = 'tile' + (i === 4 ? ' hi' : ''); d.style.left = (870 + (i % 2) * 400) + 'px'; d.style.top = (110 + Math.floor(i / 2) * 235) + 'px';
+    d.innerHTML = `<div class="ico"><svg viewBox="0 0 24 24" style="fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round">${ICON[t[0]]}</svg></div><h6>${t[1]}</h6>`; $('#tiles').appendChild(d); });
 
-  const tl = gsap.timeline({ paused: true, defaults: { ease: 'power3.out' } });
-  window.tl = tl;
+  const tl = gsap.timeline({ paused: true, defaults: { ease: 'power3.out' } }); window.tl = tl;
   const fmt = n => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   const show = (id, a, b) => { tl.set(id, { autoAlpha: 1 }, a).set(id, { autoAlpha: 0 }, b); };
-  let wn = 0;   // un élément de rideau par transition, pour éviter les conflits quand on saute dans le temps
-  const wipe = (t, col) => { const w = document.createElement('div'); w.className = 'wp'; w.style.background = col === '#wipe2' ? 'var(--mint)' : 'var(--green)'; w.style.zIndex = col === '#wipe2' ? 49 : 50; $('#stage').appendChild(w);
+  const wipe = (t, alt) => { const w = document.createElement('div'); w.className = 'wp'; w.style.background = alt ? 'var(--cu2)' : 'var(--cu)'; w.style.zIndex = alt ? 49 : 50; $('#stage').appendChild(w);
     gsap.set(w, { xPercent: -101 }); tl.to(w, { xPercent: 0, duration: .38, ease: 'power3.in', immediateRender: false }, t).to(w, { xPercent: 101, duration: .42, ease: 'power3.out', immediateRender: false }, t + .38); };
-
-  /* fond et progression */
-  const TOT = 30;
-  tl.to('#grid', { x: -192, y: -192, duration: TOT, ease: 'none' }, 0);
-  tl.to('#glow', { x: 220, y: 120, duration: TOT, ease: 'none' }, 0);
-  tl.to('#prog', { width: 1920, duration: TOT, ease: 'none' }, 0);
-  const slideWords = (sel, t, st) => tl.fromTo(sel, { yPercent: 115 }, { yPercent: 0, duration: .75, stagger: st || .12, ease: 'power4.out' }, t);
+  const words = (sel, t, st) => tl.fromTo(sel, { yPercent: 115 }, { yPercent: 0, duration: .75, stagger: st || .12, ease: 'power4.out' }, t);
   const kick = (sel, t) => tl.fromTo(sel, { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: .55 }, t);
+  const TOT = 30;
+  tl.to('#grid', { x: -192, y: -192, duration: TOT, ease: 'none' }, 0).to('#glow', { x: 220, y: 120, duration: TOT, ease: 'none' }, 0).to('#prog', { width: 1920, duration: TOT, ease: 'none' }, 0);
 
   /* 1. LOGO 0 → 2.6 */
   show('#s1', 0, 2.6);
@@ -238,88 +196,83 @@
     .fromTo('#tag2', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .8 }, 3.65)
     .to('#s2', { x: -90, duration: 2.2, ease: 'none' }, 3.1)
     .fromTo('#hud', { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: .6 }, 3.2);
-  wipe(4.95, '#wipe2'); wipe(5.05);
+  wipe(4.95, true); wipe(5.05);
 
-  /* 3. TABLEAU DE BORD 5.2 → 10.1 */
-  show('#s3', 5.2, 10.15);
+  /* 3. HUB 5.2 → 9.2 */
+  show('#s3', 5.2, 9.25);
   const c = { a: 0, b: 0, c: 0 };
   tl.set('#win', { transformPerspective: 2200 }, 0)
-    .fromTo('#win', { rotationX: 38, rotationY: -26, y: 220, scale: .8, opacity: 0 }, { rotationX: 8, rotationY: -8, y: 0, scale: 1, opacity: 1, duration: 1.4, ease: 'power4.out' }, 5.3)
-    .to('#win', { rotationX: 3, rotationY: 6, scale: 1.07, duration: 3.6, ease: 'sine.inOut' }, 6.6)
-    .fromTo(['#kp1', '#kp2', '#kp3'], { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: .7, stagger: .16 }, 6.0)
-    .fromTo(['#a1', '#a2', '#ch'], { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: .7, stagger: .16 }, 6.6)
-    .fromTo('#bars i', { scaleY: 0 }, { scaleY: 1, duration: .9, stagger: .06, ease: 'back.out(1.4)' }, 7.0)
-    .fromTo('#toast', { x: 120, opacity: 0, scale: .8 }, { x: 0, opacity: 1, scale: 1, duration: .6, ease: 'back.out(1.8)' }, 8.3)
-    .to('#a1', { scale: 1.05, boxShadow: '0 24px 50px rgba(30,61,47,.35)', duration: .5, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 8.7)
-    .to('#a2', { scale: 1.05, boxShadow: '0 24px 50px rgba(30,61,47,.35)', duration: .5, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 9.1);
-  tl.to(c, { a: 12480, b: 1.48, c: 6, duration: 2.2, ease: 'power2.out', onUpdate() { $('#n1').textContent = fmt(c.a); $('#n2').textContent = c.b.toFixed(2).replace('.', ',') + ' Md'; $('#n3').textContent = Math.round(c.c); } }, 6.1);
-  tl.to('#win', { y: -60, opacity: 0, rotationX: -14, duration: .5, ease: 'power3.in' }, 9.75);
-  wipe(9.8);
+    .fromTo('#win', { rotationX: 38, rotationY: -26, y: 220, scale: .8, opacity: 0 }, { rotationX: 8, rotationY: -8, y: 0, scale: 1, opacity: 1, duration: 1.2, ease: 'power4.out' }, 5.3)
+    .to('#win', { rotationX: 3, rotationY: 6, scale: 1.07, duration: 3, ease: 'sine.inOut' }, 6.3)
+    .fromTo(['#kp1', '#kp2', '#kp3'], { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: .6, stagger: .14 }, 5.8)
+    .fromTo(['#a1', '#a2', '#ch'], { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: .6, stagger: .14 }, 6.3)
+    .fromTo('#bars i', { scaleY: 0 }, { scaleY: 1, duration: .8, stagger: .05, ease: 'back.out(1.4)' }, 6.6)
+    .fromTo('#toast', { x: 120, opacity: 0, scale: .8 }, { x: 0, opacity: 1, scale: 1, duration: .5, ease: 'back.out(1.8)' }, 7.6)
+    .to('#win', { y: -60, opacity: 0, rotationX: -14, duration: .45, ease: 'power3.in' }, 8.8);
+  tl.to(c, { a: 12480, b: 1.48, c: 6, duration: 1.9, ease: 'power2.out', onUpdate() { $('#n1').textContent = fmt(c.a); $('#n2').textContent = c.b.toFixed(2).replace('.', ',') + ' Md'; $('#n3').textContent = Math.round(c.c); } }, 5.9);
+  wipe(8.85);
 
-  /* 4. COMPTABILITÉ 10.0 → 14.1 */
-  show('#sC', 10.0, 14.1);
-  const L = $('#ln').getTotalLength(), q = { a: 0, b: 0, c: 0, d: 0 };
-  gsap.set('#ln', { strokeDasharray: L, strokeDashoffset: L });
-  kick('#kC', 10.4); slideWords('.WC', 10.45, .15);
-  tl.fromTo('#tC', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .8 }, 11.1)
-    .fromTo('#pnC', { x: 320, opacity: 0, rotationY: -22 }, { x: 0, opacity: 1, rotationY: 0, duration: .9, ease: 'power4.out' }, 10.5)
-    .fromTo('.k4 div', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: .6, stagger: .12 }, 11.2)
-    .fromTo('#area', { opacity: 0 }, { opacity: 1, duration: 1.4, ease: 'power1.inOut' }, 11.8)
-    .to('#ln', { strokeDashoffset: 0, duration: 1.9, ease: 'power2.inOut' }, 11.7)
-    .fromTo('#dot', { scale: 0, transformOrigin: '50% 50%' }, { scale: 1, duration: .4, ease: 'back.out(3)' }, 13.4);
-  tl.to(q, { a: 2.48, b: 312, c: 640, d: 4.1, duration: 2.0, ease: 'power2.out', onUpdate() { $('#c1').textContent = q.a.toFixed(2).replace('.', ',') + ' Md'; $('#c2').textContent = Math.round(q.b) + ' M'; $('#c3').textContent = Math.round(q.c) + ' M'; $('#c4').textContent = q.d.toFixed(1).replace('.', ',') + ' Md'; } }, 11.3);
-  tl.to('#pnC', { y: 20, duration: 3, ease: 'sine.inOut' }, 11.4);
-  wipe(13.75, '#wipe2'); wipe(13.85);
+  /* 4. BILAN 9.0 → 13.2 */
+  show('#s4', 9.0, 13.25);
+  kick('#k4', 9.3); words('.W4', 9.35, .14);
+  tl.set('#sh4', { transformPerspective: 2200 }, 0)
+    .fromTo('#sh4', { rotationY: -28, x: 340, y: 120, scale: .85, opacity: 0 }, { rotationY: -6, x: 0, y: 0, scale: 1, opacity: 1, duration: 1.1, ease: 'power4.out' }, 9.3)
+    .to('#sh4', { rotationY: 3, duration: 3.6, ease: 'sine.inOut' }, 10.3)
+    .fromTo('#im4', { scale: 1 }, { scale: 1.45, duration: 2.4, ease: 'power2.inOut' }, 10.4)
+    .fromTo('#b41', { y: -60, opacity: 0, scale: .7 }, { y: 0, opacity: 1, scale: 1, duration: .6, ease: 'back.out(1.8)' }, 10.9)
+    .fromTo('#b42', { y: 60, opacity: 0, scale: .7 }, { y: 0, opacity: 1, scale: 1, duration: .6, ease: 'back.out(1.8)' }, 11.8);
+  wipe(12.75, true); wipe(12.85);
 
-  /* 5. SOCLE 14.0 → 18.0 */
-  show('#s4', 14.0, 18.05);
-  kick('#k4', 14.35); slideWords('.W4', 14.4, .12);
-  tl.fromTo('.tile', { y: 140, rotationX: -50, opacity: 0, scale: .85 }, { y: 0, rotationX: 0, opacity: 1, scale: 1, duration: .75, stagger: .16, ease: 'back.out(1.3)' }, 14.4)
-    .to('.tile', { y: -10, duration: .7, yoyo: true, repeat: 1, stagger: .08, ease: 'sine.inOut' }, 16.2);
-  wipe(17.65, '#wipe2'); wipe(17.75);
+  /* 5. SAISIE + VALIDATIONS 12.9 → 17.2 */
+  show('#s5', 12.9, 17.25);
+  kick('#k5', 13.2); words('.W5', 13.25, .14);
+  tl.fromTo('#t5', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .7 }, 13.9)
+    .set('#sh5a', { transformPerspective: 2200 }, 0)
+    .fromTo('#sh5a', { rotationY: -30, rotationZ: -6, x: 300, opacity: 0 }, { rotationY: -8, rotationZ: -2, x: 0, opacity: 1, duration: 1.1, ease: 'power4.out' }, 13.3)
+    .fromTo('#sh5b', { y: 400, rotationZ: 8, opacity: 0 }, { y: 0, rotationZ: 3, opacity: 1, duration: 1.0, ease: 'power4.out' }, 14.0)
+    .fromTo('#im5b', { y: 0 }, { y: -105, duration: 2.6, ease: 'power1.inOut' }, 14.6)
+    .to('#sh5a', { rotationY: 2, duration: 3.2, ease: 'sine.inOut' }, 14.4)
+    .fromTo('#b51', { x: -80, opacity: 0, scale: .7 }, { x: 0, opacity: 1, scale: 1, duration: .6, ease: 'back.out(1.8)' }, 14.8)
+    .fromTo('#b52', { x: -80, opacity: 0, scale: .7 }, { x: 0, opacity: 1, scale: 1, duration: .6, ease: 'back.out(1.8)' }, 15.6);
+  wipe(16.85, true); wipe(16.95);
 
-  /* 6. PORTAIL 17.9 → 22.1 */
-  show('#sP', 17.9, 22.1);
-  kick('#kP', 18.25); slideWords('.WP', 18.3, .15);
-  tl.fromTo('#phone', { y: 900, rotationZ: 8, rotationY: -25, opacity: 0 }, { y: 0, rotationZ: 0, rotationY: -8, opacity: 1, duration: 1.2, ease: 'power4.out' }, 18.2)
-    .fromTo('.li', { x: 120, opacity: 0 }, { x: 0, opacity: 1, duration: .6, stagger: .14 }, 18.9)
-    .fromTo('.pbi', { scaleX: 0 }, { scaleX: 1, duration: 1.0, stagger: .2, ease: 'power2.out' }, 19.5)
-    .fromTo('.cta2', { y: 120, opacity: 0 }, { y: 0, opacity: 1, duration: .6, ease: 'back.out(1.6)' }, 20.2)
-    .fromTo(['#cp1', '#cp2', '#cp3', '#cp4'], { x: 160, opacity: 0, scale: .6 }, { x: 0, opacity: 1, scale: 1, duration: .6, stagger: .28, ease: 'back.out(1.8)' }, 19.2)
-    .to('#phone', { rotationY: 6, y: -20, duration: 3.2, ease: 'sine.inOut' }, 19.4)
-    .to(['#cp1', '#cp2', '#cp3', '#cp4'], { y: -14, duration: .8, yoyo: true, repeat: 1, stagger: .12, ease: 'sine.inOut' }, 20.6);
-  wipe(21.75, '#wipe2'); wipe(21.85);
+  /* 6. FONCIER 17.0 → 21.3 */
+  show('#s6', 17.0, 21.35);
+  kick('#k6', 17.3); words('.W6', 17.35, .16);
+  tl.fromTo('#t6', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .7 }, 18.0)
+    .set('#sh6', { transformPerspective: 2200 }, 0)
+    .fromTo('#sh6', { rotationY: -26, x: 300, opacity: 0 }, { rotationY: -5, x: 0, opacity: 1, duration: 1.1, ease: 'power4.out' }, 17.3)
+    .fromTo('#im6', { y: 0 }, { y: -355, duration: 3.4, ease: 'power1.inOut' }, 18.0)
+    .fromTo(['#b61', '#b62', '#b63'], { x: -100, opacity: 0, scale: .7 }, { x: 0, opacity: 1, scale: 1, duration: .6, stagger: .45, ease: 'back.out(1.8)' }, 18.4);
+  wipe(20.95, true); wipe(21.05);
 
-  /* 7. RÔLES & SÉCURITÉ 22.0 → 25.9 */
-  show('#s5', 22.0, 25.9);
-  kick('#k5', 22.35); slideWords('.W5', 22.4, .12);
-  tl.fromTo('.role', { x: 300, opacity: 0, rotationY: -25 }, { x: 0, opacity: 1, rotationY: 0, duration: .75, stagger: .15, ease: 'power4.out' }, 22.4)
-    .fromTo('.pill', { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: .6, stagger: .2, ease: 'back.out(1.6)' }, 24.2);
-  const knobs = [['.t1', 23.1], ['.t2', 23.25], ['.t3', 23.4], ['.t5', 23.55], ['.t6', 23.65]];
-  const st = document.createElement('style'); st.textContent = '.sw u::after{ left:calc(4px + 30px * var(--k,0)) }'; document.head.appendChild(st);
-  knobs.forEach(([sel, t]) => { const el = $(sel), o = { v: 0 }; tl.to(el, { backgroundColor: '#2f7a57', duration: .25 }, t).to(o, { v: 1, duration: .25, onUpdate() { el.style.setProperty('--k', o.v); } }, t); });
-  wipe(25.55);
+  /* 7. MODULES 21.1 → 25.0 */
+  show('#s7', 21.1, 25.05);
+  kick('#k7', 21.4); words('.W7', 21.45, .14);
+  tl.fromTo('.tile', { y: 140, rotationX: -50, opacity: 0, scale: .85 }, { y: 0, rotationX: 0, opacity: 1, scale: 1, duration: .7, stagger: .14, ease: 'back.out(1.3)' }, 21.5)
+    .to('.tile', { y: -10, duration: .6, yoyo: true, repeat: 1, stagger: .07, ease: 'sine.inOut' }, 23.2);
+  wipe(24.65, true); wipe(24.75);
 
-  /* 8. MOTS 25.7 → 27.9 */
-  show('#s6', 25.7, 27.95);
-  [['#w1', 25.8], ['#w2', 26.25], ['#w3', 26.7], ['#w4', 27.15]].forEach(([w, t]) => {
-    tl.fromTo(w, { opacity: 0, scale: 1.35, y: 30 }, { opacity: 1, scale: 1, y: 0, duration: .22, ease: 'power4.out' }, t)
-      .to(w, { opacity: 0, scale: .9, duration: .15, ease: 'power2.in' }, t + .3);
+  /* 8. MOTS 24.9 → 27.0 */
+  show('#s8', 24.9, 27.05);
+  [['#w1', 25.0], ['#w2', 25.65], ['#w3', 26.3]].forEach(([w, t]) => {
+    tl.fromTo(w, { opacity: 0, scale: 1.35, y: 30 }, { opacity: 1, scale: 1, y: 0, duration: .25, ease: 'power4.out' }, t)
+      .to(w, { opacity: 0, scale: .9, duration: .15, ease: 'power2.in' }, t + .45);
   });
-  wipe(27.55, '#wipe2'); wipe(27.65);
+  wipe(26.65, true); wipe(26.75);
 
-  /* 9. FIN 27.8 → 30 */
-  show('#s7', 27.8, 30.01);
-  tl.fromTo('#logo7', { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: .75, ease: 'back.out(1.7)' }, 28.05)
-    .fromTo('#e1', { scale: .6, opacity: .6 }, { scale: 5, opacity: 0, duration: 1.3 }, 28.15)
-    .fromTo('#shine7', { x: 0 }, { x: 520, duration: .6, ease: 'power2.inOut' }, 28.4)
-    .fromTo('#t7', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .7 }, 28.4)
-    .fromTo('#u7', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .7 }, 28.75)
-    .to('#logo7', { scale: 1.05, duration: .9, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 29.0)
-    .to('#hud', { opacity: 0, duration: .3 }, 27.8);
+  /* 9. FIN 26.9 → 30 */
+  show('#s9', 26.9, 30.01);
+  tl.fromTo('#logo9', { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: .75, ease: 'back.out(1.7)' }, 27.15)
+    .fromTo('#e1', { scale: .6, opacity: .6 }, { scale: 5, opacity: 0, duration: 1.3 }, 27.25)
+    .fromTo('#shine9', { x: 0 }, { x: 520, duration: .6, ease: 'power2.inOut' }, 27.5)
+    .fromTo('#t9', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .7 }, 27.5)
+    .fromTo('#u9', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .7 }, 27.9)
+    .to('#logo9', { scale: 1.05, duration: .8, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 28.3)
+    .to('#hud', { opacity: 0, duration: .3 }, 26.9);
   tl.to({}, { duration: .01 }, 30);
   window.seek = t => { tl.time(t, false); };
-  window.__dur = tl.duration();
+  window.__imgs = () => Promise.all([...document.images].map(i => i.decode().catch(() => {})));
 })();
 </script>
 </body>
