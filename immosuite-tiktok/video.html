@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>ImmoSuite ERP — TikTok 30s</title>
+<style>
+  :root { --navy:#0A1628; --navy2:#0A2540; --blue:#2563EB; --blue2:#60A5FA; --orange:#FF6B00; --green:#00D084; --white:#fff; }
+  * { box-sizing:border-box; margin:0; }
+  html,body { width:1080px; height:1920px; overflow:hidden; background:#000; font-family:"Inter","Liberation Sans",sans-serif; -webkit-font-smoothing:antialiased; }
+  #stage { position:relative; width:1080px; height:1920px; overflow:hidden; background:linear-gradient(180deg,#0b1a33 0%,#0A1628 55%,#07101f 100%); perspective:2400px; }
+  #grid { position:absolute; inset:-200px; background-image:linear-gradient(rgba(96,165,250,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(96,165,250,.07) 1px,transparent 1px); background-size:90px 90px; }
+  #glow1 { position:absolute; width:1200px; height:1200px; left:-300px; top:300px; border-radius:50%; background:radial-gradient(closest-side,rgba(37,99,235,.45),transparent); }
+  #glow2 { position:absolute; width:900px; height:900px; left:480px; top:1100px; border-radius:50%; background:radial-gradient(closest-side,rgba(255,107,0,.28),transparent); }
+  .scene { position:absolute; inset:0; opacity:0; visibility:hidden; }
+  .abs { position:absolute; }
+  .mask { display:block; overflow:hidden; } .mask > span { display:inline-block; will-change:transform; }
+  .kick { position:absolute; left:70px; top:150px; font-size:28px; font-weight:800; letter-spacing:.3em; text-transform:uppercase; color:var(--orange); }
+  .head { position:absolute; left:70px; top:200px; font-weight:900; letter-spacing:-.04em; color:#fff; line-height:1.02; white-space:nowrap; }
+  .head b { color:var(--blue2); font-weight:900; }
+  .phone { position:absolute; border-radius:84px; background:#05080f; padding:16px; box-shadow:0 90px 160px rgba(0,0,0,.6), inset 0 0 0 3px #2a3550, 0 0 0 2px rgba(255,255,255,.06); }
+  .scr { position:relative; width:100%; height:100%; border-radius:68px; overflow:hidden; background:#fff; }
+  .scr img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top; will-change:transform,opacity; }
+  .notch { position:absolute; top:26px; left:50%; width:130px; height:34px; margin-left:-65px; border-radius:20px; background:#05080f; z-index:3; }
+  .card { position:absolute; border-radius:30px; overflow:hidden; background:#fff; box-shadow:0 70px 150px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.15); } .card img { display:block; width:100%; will-change:transform; }
+  .chip { position:absolute; padding:20px 34px; border-radius:70px; background:#fff; color:#0A1628; font-size:34px; font-weight:800; box-shadow:0 26px 70px rgba(0,0,0,.5); white-space:nowrap; letter-spacing:-.01em; }
+  .chip.o { background:var(--orange); color:#fff; } .chip.b { background:var(--blue); color:#fff; } .chip.g { background:var(--green); color:#04261a; } .chip.d { background:#0A1628; color:#fff; border:2px solid var(--blue2); }
+  .logoCard { width:640px; height:360px; border-radius:48px; background:#fff; display:grid; place-items:center; box-shadow:0 60px 140px rgba(0,0,0,.55); overflow:hidden; } .logoCard img { width:560px; display:block; }
+  .tagline { font-size:44px; font-weight:700; color:#fff; letter-spacing:-.01em; text-align:center; }
+  .sanix { font-weight:900; letter-spacing:.04em; } .sanix i { font-style:normal; color:var(--green); }
+  #hud { position:absolute; left:50px; top:70px; z-index:60; display:flex; align-items:center; gap:14px; color:#fff; opacity:0; font-weight:800; letter-spacing:.06em; font-size:26px; }
+  #hud img { height:60px; background:#fff; border-radius:14px; padding:4px 10px; }
+  #prog { position:absolute; left:0; top:0; height:8px; width:0; background:linear-gradient(90deg,var(--blue),var(--orange)); z-index:60; }
+  .wp { position:absolute; inset:0; }
+  .big { font-weight:900; color:#fff; letter-spacing:-.045em; line-height:.95; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="grid"></div><div id="glow1"></div><div id="glow2"></div>
+  <div id="hud"><img src="assets/immosuite_logo.jpg"><span>ImmoSuite ERP</span></div>
+  <div id="prog"></div>
+</div>
+<script src="gsap.min.js"></script>
+<script>
+(function () {
+  const $ = s => document.querySelector(s), stage = $('#stage');
+  const tl = gsap.timeline({ paused: true, defaults: { ease: 'power3.out' } }); window.tl = tl;
+  const show = (el, a, b) => { tl.set(el, { autoAlpha: 1 }, a).set(el, { autoAlpha: 0 }, b); };
+  const wipe = (t, col) => { const w = document.createElement('div'); w.className = 'wp'; w.style.background = col; w.style.zIndex = 50; stage.appendChild(w); gsap.set(w, { yPercent: 101 });
+    tl.to(w, { yPercent: 0, duration: .34, ease: 'power3.in', immediateRender: false }, t).to(w, { yPercent: -101, duration: .4, ease: 'power3.out', immediateRender: false }, t + .34); };
+  const mk = (html, parent) => { const d = document.createElement('div'); d.innerHTML = html.trim(); const e = d.firstChild; (parent || stage).appendChild(e); return e; };
+  tl.to('#grid', { x: -180, y: -180, duration: 30, ease: 'none' }, 0).to('#glow1', { x: 200, y: -100, duration: 30, ease: 'none' }, 0).to('#glow2', { x: -200, y: 100, duration: 30, ease: 'none' }, 0).to('#prog', { width: 1080, duration: 30, ease: 'none' }, 0);
+
+  /* ---------- Hook + logo : 0 → 3 ---------- */
+  const s1 = mk('<div class="scene" id="s1"></div>');
+  s1.innerHTML = `
+    <div class="abs" style="left:70px;top:520px;width:940px"><div class="big" style="font-size:118px">
+      <span class="mask"><span class="h1">Promoteur ?</span></span><span class="mask"><span class="h1">Aménageur ?</span></span>
+      <span class="mask"><span class="h1" style="color:var(--orange)">Fini les tableurs.</span></span></div></div>
+    <div class="abs" id="lg1" style="left:220px;top:640px;opacity:0"><div class="logoCard"><img src="assets/immosuite_logo.jpg"></div></div>
+    <div class="abs tagline" id="tg1" style="left:70px;right:70px;top:1090px;opacity:0">Le logiciel des <span style="color:var(--blue2)">promoteurs</span><br>et <span style="color:var(--orange)">aménageurs</span></div>`;
+  show('#s1', 0, 3.1);
+  tl.fromTo('#s1 .h1', { yPercent: 115 }, { yPercent: 0, duration: .6, stagger: .22, ease: 'power4.out' }, .15)
+    .to('#s1 .big', { opacity: 0, y: -40, duration: .35, ease: 'power2.in' }, 1.55)
+    .fromTo('#lg1', { scale: .3, rotation: -12, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: .8, ease: 'back.out(1.6)' }, 1.65)
+    .fromTo('#tg1', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: .6 }, 2.2)
+    .to('#hud', { opacity: 1, duration: .5 }, 3.2);
+  wipe(2.75, '#2563EB');
+
+  /* ---------- Générateur de scènes ---------- */
+  let sn = 1;
+  function phone(sc, o) {
+    const w = o.w, h = Math.round(w * 932 / 430) + 32;
+    const el = mk(`<div class="phone" style="left:${o.x}px;top:${o.y}px;width:${w + 32}px;height:${h}px"><div class="notch"></div><div class="scr">${o.imgs.map((s, i) => `<img src="assets/${s}" ${i ? 'style="opacity:0"' : ''}>`).join('')}</div></div>`, sc);
+    return el;
+  }
+  function scene(cfg) {
+    const id = 's' + (++sn), sc = mk(`<div class="scene" id="${id}"></div>`);
+    sc.innerHTML = `<div class="kick">${cfg.kick}</div><div class="head" style="font-size:${cfg.fs}px">${cfg.head.map(l => `<span class="mask"><span class="hw">${l}</span></span>`).join('')}</div>`;
+    show('#' + id, cfg.t0, cfg.t1);
+    tl.fromTo(`#${id} .kick`, { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: .5 }, cfg.t0 + .3)
+      .fromTo(`#${id} .hw`, { yPercent: 115 }, { yPercent: 0, duration: .65, stagger: .14, ease: 'power4.out' }, cfg.t0 + .3);
+    (cfg.phones || []).forEach((o, k) => {
+      const el = phone(sc, o); gsap.set(el, { transformPerspective: 2400 });
+      const t = cfg.t0 + .35 + k * .25;
+      tl.fromTo(el, { y: 700, rotationY: -35, rotationZ: o.rz ? o.rz * 2 : 6, opacity: 0, scale: .85 }, { y: 0, rotationY: o.ry || 0, rotationZ: o.rz || 0, opacity: 1, scale: 1, duration: 1, ease: 'power4.out' }, t)
+        .to(el, { y: -26, rotationY: (o.ry || 0) * -0.5, duration: cfg.t1 - t - 1.2, ease: 'sine.inOut' }, t + 1.0);
+      const im = el.querySelectorAll('img');
+      if (im.length > 1) {
+        const ts = cfg.t0 + 1.9 + k * .35;
+        tl.to(im[0], { opacity: 0, y: -80, duration: .7, ease: 'power2.inOut' }, ts).fromTo(im[1], { opacity: 0, y: 120 }, { opacity: 1, y: 0, duration: .7, ease: 'power2.inOut' }, ts);
+      }
+    });
+    (cfg.cards || []).forEach((o, k) => {
+      const el = mk(`<div class="card" style="left:${o.x}px;top:${o.y}px;width:${o.w}px;height:${o.h}px"><img src="assets/${o.img}" style="${o.style || ''}"></div>`, sc);
+      gsap.set(el, { transformPerspective: 2400 });
+      const t = cfg.t0 + .4 + k * .3;
+      tl.fromTo(el, { y: 600, rotationX: 30, rotationY: -25, opacity: 0, scale: .85 }, { y: 0, rotationX: o.rx || 0, rotationY: o.ry || 0, rotationZ: o.rz || 0, opacity: 1, scale: 1, duration: 1.0, ease: 'power4.out' }, t);
+      if (o.pan) tl.fromTo(el.querySelector('img'), { y: 0 }, { y: o.pan, duration: cfg.t1 - t - 1.4, ease: 'power1.inOut' }, t + .9);
+      if (o.zoom) tl.fromTo(el.querySelector('img'), { scale: 1, transformOrigin: o.zoom }, { scale: 1.5, duration: cfg.t1 - t - 1.4, ease: 'power2.inOut' }, t + .9);
+    });
+    (cfg.chips || []).forEach((c, k) => {
+      const el = mk(`<div class="chip ${c.c || ''}" style="left:${c.x}px;top:${c.y}px">${c.t}</div>`, sc);
+      tl.fromTo(el, { scale: .4, opacity: 0, y: 40 }, { scale: 1, opacity: 1, y: 0, duration: .55, ease: 'back.out(1.9)' }, cfg.t0 + 1.2 + k * .45)
+        .to(el, { y: -14, duration: .9, yoyo: true, repeat: 1, ease: 'sine.inOut' }, cfg.t0 + 2.0 + k * .45);
+    });
+    return id;
+  }
+  const W = 1080;
+  scene({ t0: 2.9, t1: 7.0, kick: 'Pilotage', head: ['Votre cockpit', '<b>au quotidien.</b>'], fs: 104,
+    phones: [{ imgs: ['m_cockpit_0.jpg', 'm_cockpit_1.jpg'], x: 270, y: 470, w: 540, ry: -5 }],
+    chips: [{ t: "File d'actions du jour", c: 'o', x: 40, y: 640 }, { t: 'Pouls de santé', c: 'b', x: 700, y: 980 }, { t: 'Relances prioritaires', c: '', x: 60, y: 1300 }] });
+  wipe(6.6, '#FF6B00');
+  scene({ t0: 6.8, t1: 10.9, kick: 'Programmes & lots', head: ['Programmes,', '<b>lots, stock.</b>'], fs: 104,
+    phones: [{ imgs: ['m_programmes_0.jpg', 'm_programmes_1.jpg'], x: 70, y: 560, w: 470, ry: 8, rz: -3 }, { imgs: ['m_lots_0.jpg', 'm_lots_1.jpg'], x: 520, y: 700, w: 470, ry: -8, rz: 3 }],
+    chips: [{ t: 'Grille des lots', c: 'b', x: 60, y: 470 }, { t: 'Morcellement', c: 'o', x: 640, y: 560 }, { t: 'Agréments', c: '', x: 330, y: 1700 }] });
+  wipe(10.5, '#2563EB');
+  scene({ t0: 10.7, t1: 14.8, kick: 'Souscripteurs', head: ['Souscripteurs', '<b>& encaissements.</b>'], fs: 92,
+    phones: [{ imgs: ['m_souscripteurs_0.jpg', 'm_souscripteurs_1.jpg'], x: 70, y: 560, w: 470, ry: 8, rz: -3 }, { imgs: ['m_paiements_0.jpg', 'm_paiements_1.jpg'], x: 520, y: 700, w: 470, ry: -8, rz: 3 }],
+    chips: [{ t: 'Reste à recouvrer', c: 'o', x: 60, y: 470 }, { t: 'Échéanciers', c: 'g', x: 700, y: 560 }, { t: 'Relances', c: '', x: 380, y: 1700 }] });
+  wipe(14.4, '#FF6B00');
+  scene({ t0: 14.6, t1: 18.7, kick: 'Commercial', head: ['Du prospect', '<b>à la vente.</b>'], fs: 104,
+    phones: [{ imgs: ['m_crm_0.jpg', 'm_crm_1.jpg'], x: 70, y: 560, w: 470, ry: 8, rz: -3 }, { imgs: ['m_commercial_0.jpg', 'm_commercial_1.jpg'], x: 520, y: 700, w: 470, ry: -8, rz: 3 }],
+    chips: [{ t: 'Pipeline', c: 'b', x: 60, y: 470 }, { t: 'Entonnoir de conversion', c: 'o', x: 460, y: 540 }, { t: 'Apporteurs', c: '', x: 380, y: 1700 }] });
+  wipe(18.3, '#2563EB');
+  scene({ t0: 18.5, t1: 22.8, kick: 'Comptabilité', head: ['Compta', '<b>SYSCOHADA.</b>'], fs: 112,
+    cards: [{ img: 'r_bilan.jpg', x: 50, y: 560, w: 980, h: 700, rx: 6, ry: -6, zoom: '72% 88%' }, { img: 'r_saisie.jpg', x: 330, y: 1130, w: 700, h: 500, rx: 4, ry: 6, rz: 2 }],
+    chips: [{ t: 'Bilan équilibré', c: 'g', x: 60, y: 470 }, { t: 'Partie double', c: 'o', x: 80, y: 1560 }, { t: 'Clôture & FEC', c: 'd', x: 560, y: 1700 }] });
+  wipe(22.4, '#FF6B00');
+  scene({ t0: 22.6, t1: 26.2, kick: 'Foncier & promotion', head: ['Du terrain', '<b>au bilan.</b>'], fs: 112,
+    cards: [{ img: 'r_foncier.jpg', x: 540, y: 520, w: 480, h: 1000, rx: 3, ry: 8, style: 'width:700px;max-width:none;margin-left:-60px', pan: -420 }],
+    phones: [{ imgs: ['m_bilan_0.jpg', 'm_bilan_1.jpg'], x: 40, y: 640, w: 440, ry: 8, rz: -2 }],
+    chips: [{ t: 'Phases foncières suivies', c: 'b', x: 60, y: 470 }, { t: 'Marge & ROI', c: 'o', x: 520, y: 1580 }, { t: 'Bilan de promotion', c: '', x: 80, y: 1700 }] });
+  wipe(25.8, '#2563EB');
+
+  /* ---------- Final : client + éditeur + CTA 26 → 30 ---------- */
+  const s9 = mk('<div class="scene" id="s9"></div>');
+  s9.innerHTML = `
+    <div class="kick" style="left:0;right:0;text-align:center;top:230px">Déjà adopté</div>
+    <div class="abs" id="cl9" style="left:140px;top:300px;width:800px;display:flex;align-items:center;gap:36px;justify-content:center">
+      <img src="assets/mh_logo.png" style="width:170px;height:170px;border-radius:40px;box-shadow:0 30px 80px rgba(0,0,0,.5)">
+      <div style="color:#fff;font-weight:900;font-size:68px;line-height:1;letter-spacing:-.03em">MENKO<br><span style="color:var(--orange)">HOLDING</span></div></div>
+    <div class="abs tagline" id="tg9" style="left:70px;right:70px;top:560px;font-size:46px">fait confiance à</div>
+    <div class="abs" id="lg9" style="left:220px;top:660px"><div class="logoCard"><img src="assets/immosuite_logo.jpg"></div></div>
+    <div class="abs" id="by9" style="left:0;right:0;top:1080px;text-align:center;color:#fff"><div style="font-size:30px;font-weight:600;opacity:.8">Développé par</div>
+      <div class="sanix" style="font-size:84px;margin-top:6px"><i>SANIX</i> AFRICA</div><div style="font-size:34px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--blue2);margin-top:6px">Division Technologies</div></div>
+    <div class="abs" id="cta9" style="left:130px;right:130px;top:1400px;text-align:center"><div class="chip o" style="position:static;display:inline-block;font-size:44px;padding:26px 48px">Demandez une démo</div>
+      <div style="color:#fff;font-size:36px;font-weight:700;margin-top:34px">+225 07 79 18 10 75</div><div style="color:var(--blue2);font-size:34px;font-weight:700;margin-top:8px">sanixafrica.com</div></div>`;
+  show('#s9', 25.9, 30.01);
+  tl.fromTo('#s9 .kick', { opacity: 0 }, { opacity: 1, duration: .5 }, 26.3)
+    .fromTo('#cl9', { scale: .5, opacity: 0, y: 40 }, { scale: 1, opacity: 1, y: 0, duration: .7, ease: 'back.out(1.6)' }, 26.4)
+    .fromTo('#tg9', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .5 }, 26.9)
+    .fromTo('#lg9', { scale: .4, rotation: -10, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: .8, ease: 'back.out(1.6)' }, 27.1)
+    .fromTo('#by9', { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: .7 }, 27.9)
+    .fromTo('#cta9', { opacity: 0, y: 60, scale: .9 }, { opacity: 1, y: 0, scale: 1, duration: .7, ease: 'back.out(1.5)' }, 28.5)
+    .to('#cta9 .chip', { scale: 1.06, duration: .45, yoyo: true, repeat: 3, ease: 'sine.inOut' }, 28.9)
+    .to('#hud', { opacity: 0, duration: .3 }, 25.9);
+  tl.to({}, { duration: .01 }, 30);
+  window.seek = t => { tl.time(t, false); };
+  window.__imgs = () => Promise.all([...document.images].map(i => i.decode().catch(() => {})));
+})();
+</script>
+</body>
+</html>
