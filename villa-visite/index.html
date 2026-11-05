@@ -13,9 +13,9 @@
   html.locked, html.locked body { overflow:hidden; }
   body { margin:0; background:#14110e; color:var(--ink); font-family:"Inter",system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
   /* ---------- Décor photo plein écran ---------- */
-  #bgwrap { position:fixed; inset:0; z-index:0; overflow:hidden; background:#14110e; }
+  #bgwrap { position:fixed; inset:-30px; z-index:0; overflow:hidden; background:#14110e; perspective:1400px; }
   .bg { position:absolute; inset:0; opacity:0; will-change:transform,opacity; }
-  .bg img { width:100%; height:100%; object-fit:cover; display:block; }
+  .bg img { width:100%; height:100%; object-fit:cover; display:block; will-change:transform; }
   .bg.nophoto { background:linear-gradient(135deg,#3a2f25,#14110e); }
   #shade { position:fixed; inset:0; z-index:1; pointer-events:none;
     background:linear-gradient(180deg,rgba(10,8,6,.55) 0%,rgba(10,8,6,0) 22%,rgba(10,8,6,0) 45%,rgba(10,8,6,.72) 100%), linear-gradient(90deg,rgba(10,8,6,.55) 0%,rgba(10,8,6,0) 55%); }
@@ -185,8 +185,22 @@
   const eq = document.getElementById('equip'); EQUIP.forEach(e => { const li = document.createElement('li'); li.textContent = e; eq.appendChild(li); });
   STEPS.forEach(s => { const im = new Image(); im.referrerPolicy = 'no-referrer'; im.src = s.img; });   // préchargement
 
-  /* ---------- Décor : fondu enchaîné avec zoom « on avance » ---------- */
+  /* ---------- Décor : caméra en mouvement continu + traversée entre les pièces ---------- */
   const layers = [document.getElementById('bgA'), document.getElementById('bgB')]; let front = 1, cur = -1;
+  /* mouvements de caméra : [x%,y%,zoom,rotY°,rotZ°] de départ -> d'arrivée (le zoom reste > 1.15 pour ne jamais montrer les bords) */
+  const CAM = [
+    [[0, 1, 1.14, 0, 0], [0, -1, 1.34, 0, 0]],        // 0 portail : on avance
+    [[-4, 0, 1.24, 3, 0], [4, 0, 1.28, -3, 0]],       // 1 façade : travelling gauche -> droite
+    [[4, 2, 1.26, -3, .6], [-4, -2, 1.22, 3, -.6]],   // 2 jardin : glissé en diagonale
+    [[0, 0, 1.16, 0, 0], [0, -1.5, 1.36, 0, 0]],      // 3 entrée : on s'enfonce dans le couloir
+    [[4, 0, 1.24, -3, 0], [-4, 0, 1.24, 3, 0]],       // 4 salon : panoramique
+    [[-4, 1, 1.22, 3, 0], [4, -1, 1.3, -3, 0]],       // 5 cuisine
+    [[3, -1, 1.28, -2, -.5], [-3, 1, 1.18, 2, .5]],   // 6 chambre 1 : on s'éloigne
+    [[-3, 0, 1.2, 2, 0], [3, 0, 1.32, -2, 0]],        // 7 chambre 2
+    [[0, 2, 1.3, 0, .6], [0, -2, 1.18, 0, -.6]],      // 8 parentale
+    [[3, 0, 1.2, -3, 0], [-3, 0, 1.3, 3, 0]],         // 9 salle d'eau
+    [[0, 0, 1.3, 0, 0], [0, 0, 1.15, 0, 0]]           // 10 final : on recule
+  ];
   function showBg(i, prev) {
     const next = layers[front ^ 1], old = layers[front], img = next.querySelector('img'), dir = i >= prev ? 1 : -1;
     next.classList.remove('nophoto'); img.style.visibility = 'visible';
@@ -194,9 +208,20 @@
     img.src = STEPS[i].img; front ^= 1;
     gsap.killTweensOf([next, old]);
     gsap.set(next, { zIndex: 2 }); gsap.set(old, { zIndex: 1 });
-    gsap.fromTo(next, { opacity: 0, scale: dir > 0 ? 1.22 : .9 }, { opacity: 1, scale: 1.04, duration: 1.8, ease: 'power3.out' });
-    if (prev >= 0) gsap.to(old, { opacity: 0, scale: dir > 0 ? 1.4 : .85, duration: 1.4, ease: 'power2.in' });
+    // traversée : l'ancienne pièce passe « derrière nous » en zoomant et en se floutant, la nouvelle se stabilise
+    gsap.fromTo(next, { opacity: 0, scale: dir > 0 ? 1.28 : .88, filter: 'blur(10px)' }, { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.9, ease: 'power3.out' });
+    if (prev >= 0) gsap.to(old, { opacity: 0, scale: dir > 0 ? 1.55 : .8, filter: 'blur(14px)', duration: 1.5, ease: 'power2.in' });
+    // mouvement de caméra continu sur la photo
+    const [f, t] = CAM[i];
+    gsap.killTweensOf(img);
+    gsap.set(img, { xPercent: f[0], yPercent: f[1], scale: f[2], rotationY: f[3], rotation: f[4], transformPerspective: 1400 });
+    gsap.to(img, { xPercent: t[0], yPercent: t[1], scale: t[2], rotationY: t[3], rotation: t[4], duration: 16, ease: 'sine.inOut', yoyo: true, repeat: -1 });
   }
+  // parallaxe douce avec la souris / le doigt
+  const bgwrap = document.getElementById('bgwrap'), qx = gsap.quickTo(bgwrap, 'x', { duration: 1.2, ease: 'power3.out' }), qy = gsap.quickTo(bgwrap, 'y', { duration: 1.2, ease: 'power3.out' });
+  addEventListener('pointermove', e => { qx((.5 - e.clientX / innerWidth) * 26); qy((.5 - e.clientY / innerHeight) * 16); });
+  // à chaque défilement, petit coup de « tangage » comme un pas
+  ScrollTrigger.create({ onUpdate: self => { const v = gsap.utils.clamp(-3, 3, self.getVelocity() / 900); gsap.to(bgwrap, { rotation: v * .25, duration: .5, ease: 'power2.out', overwrite: 'auto' }); gsap.to(bgwrap, { rotation: 0, duration: 1.2, delay: .4, overwrite: false }); } });
 
   /* ---------- Plan & caméra ---------- */
   const cam = document.getElementById('cam'), trail = document.getElementById('trail'), pos = { x: 317, y: 368, a: 0 };
