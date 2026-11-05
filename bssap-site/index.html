@@ -355,18 +355,29 @@
   if (window.speechSynthesis) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
   let token = 0, advTimer = null, voTimer = null;
   function next() { if (cur < VO.length - 1) scrollToSec(cur + 1); else setTour(false); }
+  let speakTimer = null;
+  function note(msg) { cap.textContent = msg; gsap.to(cap, { opacity: 1, duration: .4 }); }
   function speak(i) {
+    clearTimeout(speakTimer); speakTimer = setTimeout(() => doSpeak(i), 320);   // laisse le temps au cancel() de se terminer
+  }
+  function doSpeak(i) {
     const text = VO[i], my = ++token; clearTimeout(advTimer);
     if (voiceOn) { cap.textContent = text; gsap.to(cap, { opacity: 1, duration: .4 }); } else gsap.to(cap, { opacity: 0, duration: .3 });
-    if ('speechSynthesis' in window) speechSynthesis.cancel();
     const est = text.length * 62 + 1800, done = () => { if (my !== token) return; if (tour) advTimer = setTimeout(next, 1100); };
-    if (voiceOn && 'speechSynthesis' in window) {
-      const u = new SpeechSynthesisUtterance(text); u.lang = 'fr-FR'; u.rate = .96; u.pitch = 1; u.volume = 1;
+    if (!('speechSynthesis' in window)) { if (voiceOn) note("Voix off indisponible sur ce navigateur — lis les sous-titres. " + text); if (tour) advTimer = setTimeout(done, est + 1500); return; }
+    speechSynthesis.cancel();
+    if (!voiceOn) { if (tour) advTimer = setTimeout(done, est + 1500); return; }
+    const parts = text.match(/[^.!?:]+[.!?:]?/g).map(x => x.trim()).filter(Boolean);
+    let failed = false;
+    parts.forEach((part, k) => {
+      const u = new SpeechSynthesisUtterance(part); u.lang = 'fr-FR'; u.rate = .96; u.pitch = 1; u.volume = 1;
       const v = voices.find(v => /google|thomas|amelie|audrey|natural/i.test(v.name)) || voices[0]; if (v) u.voice = v;
-      u.onend = done; u.onerror = () => { if (my === token) advTimer = setTimeout(done, est); };
+      if (k === parts.length - 1) u.onend = done;
+      u.onerror = e => { if (my !== token || failed) return; failed = true; if (e.error !== 'interrupted' && e.error !== 'canceled') note("La voix n'a pas pu démarrer (" + (e.error || 'erreur') + "). Vérifie le volume et la synthèse vocale de l'appareil. " + text); if (tour) advTimer = setTimeout(done, est); };
       speechSynthesis.speak(u);
-      advTimer = setTimeout(() => { if (my === token && tour && !speechSynthesis.speaking) done(); }, est + 6000);
-    } else if (tour) advTimer = setTimeout(done, est + 1500);
+    });
+    speechSynthesis.resume();
+    advTimer = setTimeout(() => { if (my === token && tour && !speechSynthesis.speaking) done(); }, est + 7000);
   }
 
   /* ============ Sections, scroll, UI ============ */
@@ -435,7 +446,7 @@
   let started = false;
   function start(withVoice) {
     started = true; const intro = document.getElementById('intro');
-    if (withVoice) { initAudio(); voiceOn = true; btnVoice.classList.add('on'); btnVoice.textContent = '🔊 Voix'; if ('speechSynthesis' in window) { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } }
+    if (withVoice) { initAudio(); voiceOn = true; btnVoice.classList.add('on'); btnVoice.textContent = '🔊 Voix'; }
     else { voiceOn = false; btnVoice.classList.remove('on'); btnVoice.textContent = '🔇 Voix'; }
     gsap.to(intro, { opacity: 0, duration: .8, onComplete: () => intro.remove() });
     document.documentElement.classList.remove('locked');
