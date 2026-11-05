@@ -136,15 +136,19 @@
   /* ---------- Final : client + éditeur + CTA 26 → 30 ---------- */
   const s9 = mk('<div class="scene" id="s9"></div>');
   s9.innerHTML = `
-    <div class="kick" style="left:0;right:0;text-align:center;top:230px">Déjà adopté</div>
-    <div class="abs" id="cl9" style="left:140px;top:300px;width:800px;display:flex;align-items:center;gap:36px;justify-content:center">
-      <img src="assets/mh_logo.png" style="width:170px;height:170px;border-radius:40px;box-shadow:0 30px 80px rgba(0,0,0,.5)">
-      <div style="color:#fff;font-weight:900;font-size:68px;line-height:1;letter-spacing:-.03em">MENKO<br><span style="color:var(--orange)">HOLDING</span></div></div>
-    <div class="abs tagline" id="tg9" style="left:70px;right:70px;top:560px;font-size:46px">fait confiance à</div>
-    <div class="abs" id="lg9" style="left:220px;top:660px"><div class="logoCard"><img src="assets/immosuite_logo.jpg"></div></div>
-    <div class="abs" id="by9" style="left:0;right:0;top:1080px;text-align:center;color:#fff"><div style="font-size:30px;font-weight:600;opacity:.8">Développé par</div>
+    <div class="kick" style="left:0;right:0;text-align:center;top:190px">Ils nous font confiance</div>
+    <div class="abs" id="cl9" style="left:0;right:0;top:260px;display:flex;flex-direction:column;align-items:center;gap:26px">
+      <div style="display:flex;align-items:center;gap:30px;width:760px">
+        <img src="assets/mh_logo.png" style="width:150px;height:150px;border-radius:38px;box-shadow:0 30px 80px rgba(0,0,0,.5)">
+        <div style="color:#fff;font-weight:900;font-size:62px;line-height:1;letter-spacing:-.03em">MENKO<br><span style="color:var(--orange)">HOLDING</span></div></div>
+      <div style="display:flex;align-items:center;gap:30px;width:760px">
+        <img src="assets/z_logo.png" style="width:150px;height:150px;border-radius:38px;box-shadow:0 30px 80px rgba(0,0,0,.5)">
+        <div style="color:#fff;font-weight:900;font-size:62px;line-height:1;letter-spacing:-.03em">ZAHARA<br><span style="color:#e8d9a8">MULTI-SERVICES</span></div></div></div>
+    <div class="abs tagline" id="tg9" style="left:70px;right:70px;top:620px;font-size:44px">utilisent</div>
+    <div class="abs" id="lg9" style="left:270px;top:700px"><div class="logoCard" style="width:540px;height:300px"><img src="assets/immosuite_logo.jpg" style="width:470px"></div></div>
+    <div class="abs" id="by9" style="left:0;right:0;top:1050px;text-align:center;color:#fff"><div style="font-size:30px;font-weight:600;opacity:.8">Développé par</div>
       <div class="sanix" style="font-size:84px;margin-top:6px"><i>SANIX</i> AFRICA</div><div style="font-size:34px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--blue2);margin-top:6px">Division Technologies</div></div>
-    <div class="abs" id="cta9" style="left:130px;right:130px;top:1400px;text-align:center"><div class="chip o" style="position:static;display:inline-block;font-size:44px;padding:26px 48px">Demandez une démo</div>
+    <div class="abs" id="cta9" style="left:130px;right:130px;top:1370px;text-align:center"><div class="chip o" style="position:static;display:inline-block;font-size:44px;padding:26px 48px">Demandez une démo</div>
       <div style="color:#fff;font-size:36px;font-weight:700;margin-top:34px">+225 07 79 18 10 75</div><div style="color:var(--blue2);font-size:34px;font-weight:700;margin-top:8px">sanixafrica.com</div></div>`;
   show('#s9', 25.9, 30.01);
   tl.fromTo('#s9 .kick', { opacity: 0 }, { opacity: 1, duration: .5 }, 26.3)
