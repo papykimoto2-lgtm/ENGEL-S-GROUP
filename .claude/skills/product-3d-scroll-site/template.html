@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>B'ssap Hibiscus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root { --c1:#d4202a; --c2:#7a0914; --ink:#fff; --muted:rgba(255,255,255,.78); }
+  * { box-sizing:border-box; }
+  html { scroll-snap-type:y mandatory; scroll-behavior:auto; }
+  html.locked, html.locked body { overflow:hidden; }
+  body { margin:0; color:var(--ink); font-family:"Barlow",system-ui,sans-serif; -webkit-font-smoothing:antialiased;
+    background:radial-gradient(ellipse at 50% 45%, var(--c1) 0%, var(--c2) 80%); background-attachment:fixed; }
+  canvas#stage { position:fixed; inset:0; width:100%; height:100%; z-index:1; pointer-events:none; }
+  #heroWord, #bgWord { position:fixed; left:0; right:0; z-index:0; pointer-events:none; font-family:"Fredoka",sans-serif; font-weight:700; white-space:nowrap; }
+  #heroWord { top:50%; transform:translateY(-58%); text-align:center; font-size:min(34vw,46vh); line-height:1; color:#fff; letter-spacing:-.02em; text-shadow:0 20px 60px rgba(60,0,0,.35); }
+  #bgWord { top:30%; font-size:34vh; line-height:1; color:rgba(255,255,255,.07); }
+  section { position:relative; z-index:2; height:100vh; height:100svh; scroll-snap-align:start; display:flex; align-items:center; padding:0 7vw; }
+  section.left { justify-content:flex-start; } section.right { justify-content:flex-end; } section.center { justify-content:center; text-align:center; }
+  .panel { max-width:460px; }
+  .rv { opacity:0; }
+  .kicker { display:flex; align-items:center; gap:14px; font-size:12px; font-weight:600; letter-spacing:.28em; text-transform:uppercase; color:var(--muted); margin-bottom:18px; }
+  .kicker::before { content:""; width:38px; height:1px; background:currentColor; }
+  center .kicker::before { display:none; }
+  h2 { font-family:"Fredoka",sans-serif; font-weight:700; font-size:clamp(40px,6.2vw,84px); line-height:.98; margin:0 0 20px; letter-spacing:-.01em; }
+  p { font-size:clamp(15px,1.25vw,18px); line-height:1.55; color:var(--muted); margin:0 0 16px; }
+  .stats { display:flex; flex-direction:column; gap:14px; margin:24px 0; }
+  .stat { display:flex; align-items:baseline; gap:14px; }
+  .stat b { font-family:"Fredoka",sans-serif; font-size:clamp(34px,3.6vw,52px); min-width:72px; }
+  .stat span { font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); }
+  .specs { display:flex; gap:28px; margin-top:22px; } .specs div b { display:block; font-family:"Fredoka",sans-serif; font-size:28px; } .specs div span { font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); }
+  .ritual h2 span { display:block; opacity:.28; transition:opacity .5s; } .ritual h2 span.on { opacity:1; }
+  .cta { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:26px; }
+  .btn { font:600 15px "Barlow",sans-serif; color:#8a0f1a; background:#fff; border:0; border-radius:999px; padding:13px 26px; cursor:pointer; text-decoration:none; pointer-events:auto; transition:transform .2s; }
+  .btn.ghost { color:#fff; background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.4); }
+  .btn:hover { transform:translateY(-2px); }
+  .scrollhint { position:absolute; bottom:78px; left:0; right:0; text-align:center; font-size:12px; letter-spacing:.3em; text-transform:uppercase; color:var(--muted); animation:bob 1.8s ease-in-out infinite; }
+  @keyframes bob { 50% { transform:translateY(6px); } }
+  header { position:fixed; top:0; left:0; right:0; z-index:5; display:flex; justify-content:space-between; align-items:center; padding:18px 5vw; pointer-events:none; }
+  .logo { font-family:"Fredoka",sans-serif; font-weight:700; font-size:22px; } .logo small { font:600 10px "Barlow",sans-serif; letter-spacing:.3em; margin-left:10px; opacity:.8; }
+  .tools { display:flex; gap:8px; pointer-events:auto; }
+  .tools button { font:600 13px "Barlow",sans-serif; color:#fff; background:rgba(0,0,0,.22); border:1px solid rgba(255,255,255,.3); border-radius:999px; padding:8px 14px; cursor:pointer; backdrop-filter:blur(6px); }
+  .tools button.on { background:#fff; color:#8a0f1a; }
+  nav#dots { position:fixed; right:18px; top:50%; transform:translateY(-50%); z-index:5; display:flex; flex-direction:column; gap:12px; }
+  nav#dots button { width:9px; height:9px; border-radius:50%; border:1px solid rgba(255,255,255,.8); background:transparent; padding:0; cursor:pointer; transition:.3s; }
+  nav#dots button.on { background:#fff; transform:scale(1.35); }
+  #caption { position:fixed; left:50%; bottom:16px; transform:translateX(-50%); z-index:5; width:max-content; max-width:min(720px,92vw); text-align:center; font-size:14px; line-height:1.4; color:#fff; background:rgba(0,0,0,.45); backdrop-filter:blur(8px); padding:9px 18px; border-radius:14px; opacity:0; pointer-events:none; }
+  #intro { position:fixed; inset:0; z-index:20; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; text-align:center; padding:24px;
+    background:radial-gradient(ellipse at 50% 45%, #d4202a 0%, #5e0610 85%); }
+  #intro h1 { font-family:"Fredoka",sans-serif; font-size:clamp(64px,16vw,150px); margin:0; line-height:1; }
+  #intro p { margin:0 0 14px; max-width:420px; }
+  #intro .btn { min-width:270px; }
+  #err { position:fixed; inset:0; z-index:30; display:none; place-items:center; text-align:center; padding:24px; background:#5e0610; }
+  @media (max-width:760px) {
+    section { align-items:flex-end; padding:0 20px 92px; } section.left, section.right { justify-content:center; }
+    .panel { max-width:none; } h2 { font-size:clamp(36px,11vw,52px); margin-bottom:12px; } nav#dots { right:8px; gap:9px; }
+    .logo small { display:none; } .stats { margin:14px 0; gap:8px; } .scrollhint { bottom:96px; } p { font-size:14.5px; margin-bottom:8px; }
+  }
+</style>
+</head>
+<body class="">
+<canvas id="stage"></canvas>
+<div id="heroWord">B'ssap</div>
+<div id="bgWord">DÉLICIEUSEMENT RAFRAÎCHISSANT · DÉLICIEUSEMENT RAFRAÎCHISSANT ·</div>
+
+<header>
+  <div class="logo">B'ssap<small>HIBISCUS DRINK</small></div>
+  <div class="tools"><button id="btnVoice">🔊 Voix</button><button id="btnTour">▶ Visite guidée</button></div>
+</header>
+<nav id="dots"></nav>
+<div id="caption"></div>
+
+<main>
+  <section class="left" data-i="0" style="align-items:flex-end;padding-bottom:13vh">
+    <div class="panel"><p class="rv" style="font-size:clamp(17px,1.8vw,24px);color:#fff;margin:0">Le goût du hibiscus, version slim.</p></div>
+    <div class="scrollhint">Scrolle ↓</div>
+  </section>
+  <section class="right" data-i="1"><div class="panel">
+    <div class="kicker rv">01 — L'infusion</div><h2 class="rv">Fleur de caractère.</h2>
+    <p class="rv">Des fleurs d'hibiscus infusées lentement. Un rouge profond, une fraîcheur franche, une pointe d'acidité.</p>
+    <p class="rv">Pas de fioritures : juste le goût du bissap, bien frais.</p></div></section>
+  <section class="left" data-i="2"><div class="panel">
+    <div class="kicker rv">02 — La recette</div><h2 class="rv">Rien à cacher.</h2>
+    <div class="stats">
+      <div class="stat rv"><b data-count="9">0</b><span>kcal / 100 ml</span></div>
+      <div class="stat rv"><b data-count="4">0</b><span>ingrédients</span></div>
+      <div class="stat rv"><b data-count="1">0</b><span>g matières grasses</span></div></div>
+    <p class="rv">Eau, extrait d'hibiscus, sucre, arômes naturels. C'est tout.</p></div></section>
+  <section class="right" data-i="3"><div class="panel">
+    <div class="kicker rv">03 — Le format</div><h2 class="rv">33cl slim.</h2>
+    <p class="rv">Fine et légère, elle se glisse partout : dans un sac, une glacière, une main. Et une fois vide, elle se recycle.</p>
+    <div class="specs rv"><div><b>115 mm</b><span>hauteur</span></div><div><b>Ø 53 mm</b><span>diamètre</span></div><div><b>33 cl</b><span>volume</span></div></div></div></section>
+  <section class="left ritual" data-i="4"><div class="panel">
+    <div class="kicker rv">04 — Le rituel</div><h2 class="rv"><span class="on">Ouvrir.</span><span>Verser.</span><span>Savourer.</span></h2><p class="rv">Un clic, et la fraîcheur s'échappe.</p></div></section>
+  <section class="left ritual" data-i="5"><div class="panel">
+    <div class="kicker rv">04 — Le rituel</div><h2 class="rv"><span>Ouvrir.</span><span class="on">Verser.</span><span>Savourer.</span></h2><p class="rv">Lentement, sur des glaçons.</p></div></section>
+  <section class="left ritual" data-i="6"><div class="panel">
+    <div class="kicker rv">04 — Le rituel</div><h2 class="rv"><span>Ouvrir.</span><span>Verser.</span><span class="on">Savourer.</span></h2><p class="rv">Sur glaçons, c'est encore meilleur.</p></div></section>
+  <section class="right" data-i="7"><div class="panel">
+    <div class="kicker rv">05 — Où nous trouver</div><h2 class="rv">À portée de main.</h2>
+    <p class="rv">Retrouve B'ssap près de chez toi, ou écris-nous pour en commander.</p>
+    <div class="cta rv" style="justify-content:flex-start"><a class="btn" href="#">Où nous trouver</a><a class="btn ghost" href="#">Nous contacter</a></div></div></section>
+</main>
+
+<div id="intro">
+  <h1>B'ssap</h1>
+  <p>Une visite en 3D, avec voix off. Active le son de ton appareil.</p>
+  <button class="btn" id="goTour">▶ Visite guidée avec voix off</button>
+  <button class="btn ghost" id="goFree">Explorer en silence</button>
+</div>
+<div id="err">WebGL n'est pas disponible sur cet appareil.</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script>
+(async function () {
+  "use strict";
+  gsap.registerPlugin(ScrollTrigger);
+  const TAU = Math.PI * 2;
+  const FONT = '"Fredoka","Trebuchet MS",sans-serif';
+  document.documentElement.classList.add('locked');
+
+  /* ============ Texte voix off + ambiances par section ============ */
+  const VO = [
+    "B'ssap. Le goût du hibiscus, tel que vous ne l'avez jamais goûté.",
+    "Des fleurs d'hibiscus infusées lentement. Un rouge profond, une fraîcheur franche, et une pointe d'acidité.",
+    "Rien à cacher. Neuf calories pour cent millilitres, quatre ingrédients, un gramme de matières grasses. De l'eau, de l'extrait d'hibiscus, du sucre, des arômes naturels. C'est tout.",
+    "Trente-trois centilitres, format slim. Fine et légère, elle se glisse partout : dans un sac, une glacière, une main. Et une fois vide, elle se recycle.",
+    "Ouvrir. Un clic, et la fraîcheur s'échappe.",
+    "Verser. Lentement, sur des glaçons.",
+    "Savourer. Sur glaçons, c'est encore meilleur.",
+    "B'ssap. Retrouvez-nous près de chez vous."
+  ];
+  const BG = [['#d4202a','#7a0914'],['#c4161f','#5e0610'],['#8c0f1c','#3a050c'],['#d02a30','#750a14'],
+              ['#6a0b16','#240308'],['#6a0b16','#240308'],['#a3121f','#450710'],['#cf1e28','#6b0812']];
+
+  /* ============ Texture du design de la canette ============ */
+  function flower(g, cx, cy, r, rot, mono) {
+    g.save(); g.translate(cx, cy); g.rotate(rot);
+    for (let i = 0; i < 5; i++) {
+      g.save(); g.rotate(i * TAU / 5);
+      const gr = g.createRadialGradient(0, 0, r * .05, 0, -r * .6, r * .9);
+      if (mono) { gr.addColorStop(0, '#fff'); gr.addColorStop(1, '#e8fff8'); }
+      else { gr.addColorStop(0, '#8a0f1c'); gr.addColorStop(.35, '#e8334a'); gr.addColorStop(1, '#ff8d99'); }
+      g.fillStyle = gr; g.beginPath(); g.moveTo(0, 0);
+      g.bezierCurveTo(-r * .75, -r * .25, -r * .85, -r * 1.1, -r * .1, -r * 1.05);
+      g.bezierCurveTo(r * .55, -r * 1.12, r * .85, -r * .3, 0, 0); g.fill();
+      if (!mono) { g.strokeStyle = 'rgba(255,255,255,.28)'; g.lineWidth = Math.max(1, r * .012);
+        for (let k = -2; k <= 2; k++) { g.beginPath(); g.moveTo(0, -r * .1); g.quadraticCurveTo(k * r * .12, -r * .55, k * r * .2, -r * .95); g.stroke(); } }
+      g.restore();
+    }
+    if (!mono) {
+      g.strokeStyle = '#ffd3a0'; g.lineWidth = r * .04; g.lineCap = 'round';
+      g.beginPath(); g.moveTo(0, 0); g.quadraticCurveTo(r * .2, -r * .5, r * .55, -r * .62); g.stroke();
+      g.fillStyle = '#ffc93c';
+      for (let k = 0; k < 6; k++) { g.beginPath(); g.arc(r * (.38 + k * .035), -r * (.46 + k * .026), r * .045, 0, TAU); g.fill(); }
+    }
+    g.restore();
+  }
+  function arcText(g, text, cx, cy, r, ca, px, bottom) {
+    g.save(); g.translate(cx, cy); g.font = '700 ' + px + 'px ' + FONT; g.fillStyle = '#fff'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    const sp = px * .12, dir = bottom ? -1 : 1, w = [...text].map(c => g.measureText(c).width + sp), tot = w.reduce((a, b) => a + b, 0);
+    let a = ca - dir * tot / r / 2;
+    [...text].forEach((ch, i) => { a += dir * (w[i] / 2) / r; g.save();
+      if (bottom) { g.rotate(a - Math.PI / 2); g.fillText(ch, 0, r); } else { g.rotate(a + Math.PI / 2); g.fillText(ch, 0, -r); }
+      g.restore(); a += dir * (w[i] / 2) / r; });
+    g.restore();
+  }
+  function seal(g, cx, cy, rad) {
+    g.save(); g.shadowColor = 'rgba(0,0,0,.4)'; g.shadowBlur = rad * .2; g.shadowOffsetY = rad * .06;
+    g.fillStyle = '#0d7d8e'; g.beginPath(); g.arc(cx, cy, rad, 0, TAU); g.fill(); g.restore();
+    g.strokeStyle = '#fff'; g.lineWidth = rad * .05; g.beginPath(); g.arc(cx, cy, rad * .93, 0, TAU); g.stroke();
+    const ig = g.createLinearGradient(cx, cy - rad, cx, cy + rad); ig.addColorStop(0, '#46d1b0'); ig.addColorStop(1, '#14909d');
+    g.fillStyle = ig; g.beginPath(); g.arc(cx, cy, rad * .6, 0, TAU); g.fill();
+    g.lineWidth = rad * .035; g.beginPath(); g.arc(cx, cy, rad * .6, 0, TAU); g.stroke();
+    arcText(g, 'NATURELLEMENT', cx, cy, rad * .77, -Math.PI / 2, rad * .17, false);
+    arcText(g, 'BISSAP AUTHENTIQUE', cx, cy, rad * .77, Math.PI / 2, rad * .15, true);
+    flower(g, cx, cy + rad * .04, rad * .3, .3, true);
+  }
+  function recycle(g, cx, cy, r) {
+    g.save(); g.translate(cx, cy); g.strokeStyle = '#fff'; g.fillStyle = '#fff'; g.lineWidth = r * .22; g.lineCap = 'round';
+    for (let i = 0; i < 3; i++) { g.save(); g.rotate(i * TAU / 3);
+      g.beginPath(); g.arc(0, 0, r, -Math.PI / 2 + .2, -Math.PI / 2 + 1.6); g.stroke();
+      const ax = Math.cos(-Math.PI / 2 + 1.75) * r, ay = Math.sin(-Math.PI / 2 + 1.75) * r;
+      g.beginPath(); g.moveTo(ax + r * .34, ay - r * .28); g.lineTo(ax - r * .05, ay + r * .35); g.lineTo(ax - r * .4, ay - r * .12); g.closePath(); g.fill(); g.restore(); }
+    g.restore();
+  }
+  function drawFront(g, cx) {
+    g.save(); g.globalAlpha = .95; flower(g, cx - 110, 330, 235, -.25, false); g.restore();
+    g.save(); g.translate(cx + 150, 790); g.rotate(.55);
+    const lg = g.createLinearGradient(-80, 0, 80, 0); lg.addColorStop(0, '#1d6fb8'); lg.addColorStop(1, '#27b5a0');
+    g.fillStyle = lg; g.beginPath(); g.moveTo(-90, 0); g.quadraticCurveTo(0, -90, 110, 0); g.quadraticCurveTo(0, 70, -90, 0); g.fill();
+    g.strokeStyle = 'rgba(255,255,255,.5)'; g.lineWidth = 3; g.beginPath(); g.moveTo(-80, 0); g.lineTo(100, 0); g.stroke(); g.restore();
+    g.save(); g.translate(cx, 640); g.rotate(-.07);
+    let px = 300; g.font = '700 ' + px + 'px ' + FONT; const tw = g.measureText("B'ssap").width;
+    if (tw > 720) { px = Math.floor(px * 720 / tw); g.font = '700 ' + px + 'px ' + FONT; }
+    g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round';
+    g.shadowColor = 'rgba(70,0,0,.55)'; g.shadowBlur = 26; g.shadowOffsetY = 12; g.lineWidth = 16; g.strokeStyle = 'rgba(255,255,255,.18)';
+    g.strokeText("B'ssap", 0, 0); g.shadowColor = 'transparent'; g.fillStyle = '#fff'; g.fillText("B'ssap", 0, 0); g.restore();
+    g.save(); g.fillStyle = 'rgba(255,255,255,.9)'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.font = '600 38px ' + FONT; if ('letterSpacing' in g) g.letterSpacing = '10px'; g.fillText('HIBISCUS', cx, 940);
+    g.font = '500 30px ' + FONT; g.fillText('33 cl', cx, 995); g.restore();
+    seal(g, cx - 205, 140, 66);
+  }
+  function drawBack(g, cx) {
+    g.save(); g.fillStyle = '#fff'; g.textAlign = 'left';
+    const x0 = cx - 190; g.font = '700 46px ' + FONT; g.fillText('Hibiscus', x0, 230); g.font = '500 22px ' + FONT;
+    ["Boisson rafraîchissante à base", "d'infusion de fleurs d'hibiscus.", "Sans conservateur.", "", "Ingrédients : eau, sucre,", "extrait d'hibiscus (8 %),", "arômes naturels."]
+      .forEach((t, i) => g.fillText(t, x0, 275 + i * 29));
+    const ty = 500, rowH = 40, tw = 380; g.strokeStyle = 'rgba(255,255,255,.9)'; g.lineWidth = 3; g.strokeRect(x0, ty, tw, rowH * 7);
+    g.font = '700 24px ' + FONT; g.fillText('Pour 100 ml', x0 + 10, ty + 28);
+    const rows = [['Énergie', '38 kJ / 9 kcal'], ['Matières grasses', '1 g'], ['Glucides', '2,1 g'], ['dont sucres', '2 g'], ['Protéines', '0 g'], ['Sel', '0 g']];
+    g.font = '500 22px ' + FONT;
+    rows.forEach((r, i) => { const y = ty + rowH * (i + 1); g.beginPath(); g.moveTo(x0, y); g.lineTo(x0 + tw, y); g.lineWidth = 1.5; g.stroke();
+      g.textAlign = 'left'; g.fillText(r[0], x0 + 10, y + 28); g.textAlign = 'right'; g.fillText(r[1], x0 + tw - 10, y + 28); });
+    recycle(g, x0 + 28, 935, 26); g.font = '700 34px ' + FONT; g.textAlign = 'right'; g.fillText('33 cl', x0 + tw, 950); g.restore();
+  }
+  function makeLabelTexture(renderer) {
+    const W = 2048, H = 1180, c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
+    const base = g.createLinearGradient(0, 0, 0, H); base.addColorStop(0, '#9e0f18'); base.addColorStop(.5, '#cf1822'); base.addColorStop(1, '#990e16');
+    g.fillStyle = base; g.fillRect(0, 0, W, H);
+    const sh = g.createLinearGradient(0, 0, W, 0); sh.addColorStop(0, 'rgba(0,0,0,.10)'); sh.addColorStop(.25, 'rgba(255,255,255,.04)');
+    sh.addColorStop(.5, 'rgba(0,0,0,.06)'); sh.addColorStop(.75, 'rgba(255,255,255,.04)'); sh.addColorStop(1, 'rgba(0,0,0,.10)');
+    g.fillStyle = sh; g.fillRect(0, 0, W, H);
+    drawFront(g, W / 2); drawBack(g, 0); drawBack(g, W); seal(g, 1600, 250, 78);
+    const t = new THREE.CanvasTexture(c); t.encoding = THREE.sRGBEncoding; t.wrapS = THREE.RepeatWrapping; t.offset.x = .5;
+    t.anisotropy = renderer.capabilities.getMaxAnisotropy(); return t;
+  }
+
+  /* ============ Renderer, scène, environnement ============ */
+  await Promise.race([document.fonts.load('700 100px Fredoka').catch(() => {}), new Promise(r => setTimeout(r, 1800))]);
+  const canvas = document.getElementById('stage'); let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); }
+  catch (e) { document.getElementById('err').style.display = 'grid'; return; }
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+  const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(30, 1, .1, 50);
+
+  (function () {
+    const env = new THREE.Scene();
+    env.add(new THREE.Mesh(new THREE.SphereGeometry(10, 32, 16), new THREE.MeshBasicMaterial({ color: 0x151012, side: THREE.BackSide })));
+    const box = (w, h, x, y, z, col, k) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(col).multiplyScalar(k), side: THREE.DoubleSide })); m.position.set(x, y, z); m.lookAt(0, 0, 0); env.add(m); };
+    box(7, 1.2, 0, 7, 0, 0xffffff, 9); box(1.2, 8, -6, 0, 3, 0xffffff, 7); box(1.2, 8, 6, 0, 3, 0xffe9d6, 6); box(5, 1.5, 0, -1, -7, 0xffffff, 3); box(6, .8, 0, -5, 3, 0xffd2c8, 2);
+    const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(env, .02).texture; pm.dispose();
+  })();
+  scene.add(new THREE.AmbientLight(0xffffff, .2));
+  const key = new THREE.DirectionalLight(0xffffff, .9); key.position.set(2, 3, 4); scene.add(key);
+
+  const stage = new THREE.Group(), root = new THREE.Group(), floatG = new THREE.Group(), pivot = new THREE.Group(), can = new THREE.Group();
+  scene.add(stage); stage.add(root); root.add(floatG); floatG.add(pivot); pivot.add(can);
+
+  const bodyMat = new THREE.MeshPhysicalMaterial({ map: makeLabelTexture(renderer), metalness: .55, roughness: .32, clearcoat: .8, clearcoatRoughness: .12, envMapIntensity: 1.1 });
+  const metalMat = new THREE.MeshStandardMaterial({ color: 0xdfe3e8, metalness: 1, roughness: .26, envMapIntensity: 1.2 });
+  const darkMetal = new THREE.MeshStandardMaterial({ color: 0x4a4e54, metalness: 1, roughness: .5 });
+  const R = .265, YT = .46, YB = -.5;
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(R, R, YT - YB, 160, 1, true), bodyMat); body.position.y = (YT + YB) / 2; can.add(body);
+  const V = a => a.map(p => new THREE.Vector2(p[0], p[1]));
+  can.add(new THREE.Mesh(new THREE.LatheGeometry(V([[R, YT], [R - .002, .472], [R - .012, .495], [R - .03, .52], [R - .05, .54], [.212, .553], [.208, .565], [.214, .574], [.222, .576], [.226, .570], [.221, .560], [.212, .552], [.2, .548], [.19, .549], [0, .549]]), 160), metalMat));
+  const bm = metalMat.clone(); bm.side = THREE.DoubleSide;
+  can.add(new THREE.Mesh(new THREE.LatheGeometry(V([[R, YB], [R - .003, -.512], [R - .014, -.535], [R - .03, -.558], [R - .042, -.568], [.213, -.572], [.205, -.566], [.195, -.552], [.17, -.54], [.12, -.526], [0, -.52]]), 160), bm));
+  // ouverture sombre + languette articulée sur le rivet
+  const opening = new THREE.Mesh(new THREE.CircleGeometry(1, 48), darkMetal); opening.scale.set(.07, .045, 1); opening.rotation.x = -Math.PI / 2; opening.position.set(.1, .5495, 0); can.add(opening);
+  const tabG = new THREE.Group(); tabG.position.set(-.03, .556, 0); can.add(tabG);
+  (function () {
+    const L = .2, W = .118, rr = .058, s = new THREE.Shape();
+    s.moveTo(-L / 2 + rr, -W / 2); s.lineTo(L / 2 - rr, -W / 2); s.quadraticCurveTo(L / 2, -W / 2, L / 2, 0); s.quadraticCurveTo(L / 2, W / 2, L / 2 - rr, W / 2);
+    s.lineTo(-L / 2 + rr, W / 2); s.quadraticCurveTo(-L / 2, W / 2, -L / 2, 0); s.quadraticCurveTo(-L / 2, -W / 2, -L / 2 + rr, -W / 2);
+    const h = new THREE.Path(); h.absellipse(.052, 0, .034, .036, 0, TAU, true); s.holes.push(h);
+    const tab = new THREE.Mesh(new THREE.ExtrudeGeometry(s, { depth: .008, bevelEnabled: true, bevelSize: .004, bevelThickness: .003, bevelSegments: 3, curveSegments: 32 }), metalMat);
+    tab.rotation.x = -Math.PI / 2; tab.position.set(.018, 0, 0); tabG.add(tab);
+    const rv = new THREE.Mesh(new THREE.CylinderGeometry(.022, .026, .016, 32), metalMat); rv.position.set(0, -.001, 0); tabG.add(rv);
+  })();
+  const mouth = new THREE.Object3D(); mouth.position.set(.1, .552, 0); can.add(mouth);
+
+  // ombre
+  const shadow = (function () {
+    const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d'), gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+    gr.addColorStop(0, 'rgba(0,0,0,.6)'); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(0, 0, 128, 128);
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 1.4), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false }));
+    m.rotation.x = -Math.PI / 2; m.position.y = -.74; stage.add(m); return m;
+  })();
+
+  /* ============ Verre, liquide, glaçons, filet ============ */
+  const GB = -.575, GH = .42, LIQ_H = .3;
+  const glassG = new THREE.Group(); stage.add(glassG);
+  const glassMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, metalness: 0, roughness: .04, transparent: true, opacity: .2, side: THREE.DoubleSide, depthWrite: false, clearcoat: 1, envMapIntensity: 1.6 });
+  glassG.add(new THREE.Mesh(new THREE.LatheGeometry(V([[0, 0], [.1, 0], [.118, .012], [.122, .03], [.178, GH], [.168, GH], [.114, .045], [0, .042]].map(p => [p[0], p[1]])), 64), glassMat));
+  const liqMat = new THREE.MeshStandardMaterial({ color: 0x7a0612, emissive: 0x2a0309, roughness: .3, metalness: 0, transparent: true, opacity: .96, envMapIntensity: .15 });
+  const liquid = new THREE.Mesh(new THREE.CylinderGeometry(.158, .118, 1, 48), liqMat); liquid.position.set(0, .045, 0); glassG.add(liquid);
+  const iceMat = new THREE.MeshPhysicalMaterial({ color: 0xeaf6ff, roughness: .1, transparent: true, opacity: .55, clearcoat: 1 });
+  const ice = [[-.05, .02, .3], [.05, -.03, .8], [0, .06, 1.3]].map(p => { const m = new THREE.Mesh(new THREE.BoxGeometry(.07, .07, .07), iceMat); m.userData = { x: p[0], z: p[1], r: p[2] }; glassG.add(m); return m; });
+  const streamMat = new THREE.MeshStandardMaterial({ color: 0xc0111f, emissive: 0x40050c, roughness: .1, transparent: true, opacity: .95 });
+  const stream = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1, 16), streamMat); stage.add(stream); stream.visible = false;
+
+  /* ============ Pétales ============ */
+  const PN = 80, petalShape = new THREE.Shape();
+  petalShape.moveTo(0, 0); petalShape.bezierCurveTo(-.03, .02, -.035, .07, 0, .085); petalShape.bezierCurveTo(.035, .07, .03, .02, 0, 0);
+  const petals = new THREE.InstancedMesh(new THREE.ShapeGeometry(petalShape, 6), new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, roughness: .55, metalness: 0, envMapIntensity: .6 }), PN);
+  const pd = [], dummy = new THREE.Object3D(), pcol = [0xff3b52, 0xe01e3c, 0xff6f80, 0xb0102a];
+  for (let i = 0; i < PN; i++) {
+    pd.push({ x: (Math.random() - .5) * 5, y: (Math.random() - .5) * 3.2, z: -1.2 + Math.random() * 2.6, s: .7 + Math.random() * 1.3, v: .08 + Math.random() * .16, ph: Math.random() * TAU, rs: (Math.random() - .5) * 2, ax: Math.random() * TAU });
+    petals.setColorAt(i, new THREE.Color(pcol[i % 4]));
+  }
+  scene.add(petals);
+
+  /* ============ Mise en page responsive ============ */
+  const L = { mobile: false, cx: .62, offY: 0, M: 1, dist: 3.3 };
+  function layout() {
+    const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h;
+    L.mobile = w < 760; L.cx = L.mobile ? 0 : (w / h > 1.25 ? .62 : .42); L.offY = L.mobile ? .28 : 0; L.M = L.mobile ? .92 : 1; L.dist = L.mobile ? 4.8 : (w / h < 1.25 ? 4 : 3.3);
+    camera.position.set(0, .1, L.dist); camera.lookAt(0, 0, 0); camera.updateProjectionMatrix();
+    stage.position.y = L.offY; glassG.position.x = L.cx + .3;
+  }
+  addEventListener('resize', () => { layout(); applyInstant(); }); layout();
+
+  /* ============ Poses (une par section) ============ */
+  const state = { x: 0, y: 0, ry: 0, rx: 0, rz: 0, s: .01, spin: 1, tab: 0, pour: 0, level: 0, glass: 0, shadow: 1, petal: 1 };
+  let spinAngle = 0, cur = -1;
+  const poses = i => { const R = L.cx, M = L.M; return [
+    { x: 0, y: 0, ry: 0, rx: 0, rz: 0, s: 1.12 * M, spin: 1, tab: 0, pour: 0, level: 0, glass: 0, shadow: 1 },
+    { x: -R, y: 0, ry: -.45, rx: 0, rz: .1, s: M, spin: 0, tab: 0, pour: 0, level: 0, glass: 0, shadow: 1 },
+    { x: R, y: 0, ry: Math.PI, rx: 0, rz: -.05, s: M, spin: 0, tab: 0, pour: 0, level: 0, glass: 0, shadow: 1 },
+    { x: -R, y: 0, ry: .35, rx: 0, rz: 0, s: M, spin: 0, tab: 0, pour: 0, level: 0, glass: 0, shadow: 1 },
+    { x: R, y: 0, ry: 0, rx: 1.05, rz: 0, s: M * .95, spin: 0, tab: .6, pour: 0, level: 0, glass: 0, shadow: 0 },
+    { x: R - .16, y: .29, ry: 0, rx: 0, rz: -2, s: 1, spin: 0, tab: .6, pour: 1, level: .8, glass: 1, shadow: 0 },
+    { x: R - .3, y: 0, ry: .4, rx: 0, rz: 0, s: 1, spin: 0, tab: .6, pour: 0, level: .8, glass: 1, shadow: 1 },
+    { x: -R, y: 0, ry: 0, rx: 0, rz: 0, s: 1.05 * M, spin: 1, tab: .6, pour: 0, level: 0, glass: 0, shadow: 1 }][i]; };
+  function applyInstant() { if (cur < 0) return; const p = poses(cur); gsap.killTweensOf(state); Object.assign(state, p); spinAngle = 0; }
+  function go(i, dur) {
+    const p = poses(i); state.ry += spinAngle; spinAngle = 0;
+    const tgt = p.ry + Math.round((state.ry - p.ry) / TAU) * TAU, d = dur == null ? 1.5 : dur;
+    const { pour, level, ry, ...rest } = p;
+    gsap.to(state, { ...rest, ry: tgt, duration: d, ease: 'power3.inOut', overwrite: 'auto' });
+    gsap.to(state, { pour, duration: pour ? .9 : .5, delay: pour ? d * .75 : 0, ease: 'power1.inOut', overwrite: 'auto' });
+    gsap.to(state, { level, duration: level > state.level ? 4.5 : 1.2, delay: level > state.level ? d * .85 : 0, ease: 'none', overwrite: 'auto' });
+  }
+
+  /* ============ Audio : bruitages + voix off ============ */
+  let ac = null, voiceOn = false, tour = false, curVO = 0, voices = [];
+  function initAudio() { try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); ac.resume && ac.resume(); } catch (e) { ac = null; } }
+  function nz(sec) { const b = ac.createBuffer(1, ac.sampleRate * sec, ac.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; return b; }
+  function sfxOpen() { if (!ac || !voiceOn) return; const t = ac.currentTime;
+    const o = ac.createOscillator(), og = ac.createGain(); o.frequency.setValueAtTime(1900, t); o.frequency.exponentialRampToValueAtTime(700, t + .05); og.gain.setValueAtTime(.25, t); og.gain.exponentialRampToValueAtTime(.001, t + .08); o.connect(og).connect(ac.destination); o.start(t); o.stop(t + .1);
+    const s = ac.createBufferSource(); s.buffer = nz(1.3); const f = ac.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = 2600; const g = ac.createGain();
+    g.gain.setValueAtTime(0, t + .06); g.gain.linearRampToValueAtTime(.3, t + .1); g.gain.exponentialRampToValueAtTime(.001, t + 1.3); s.connect(f).connect(g).connect(ac.destination); s.start(t + .06); }
+  function sfxPour() { if (!ac || !voiceOn) return; const t = ac.currentTime, s = ac.createBufferSource(); s.buffer = nz(4.5); const f = ac.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 1100; f.Q.value = .7; const g = ac.createGain();
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.16, t + .4); g.gain.setValueAtTime(.16, t + 3.6); g.gain.linearRampToValueAtTime(0, t + 4.4); f.frequency.linearRampToValueAtTime(2200, t + 4.2); s.connect(f).connect(g).connect(ac.destination); s.start(t); }
+  function sfxIce() { if (!ac || !voiceOn) return; [0, .35, .8].forEach(d => { const t = ac.currentTime + d, o = ac.createOscillator(), g = ac.createGain(); o.type = 'triangle'; o.frequency.value = 2400 + Math.random() * 1400; g.gain.setValueAtTime(.12, t); g.gain.exponentialRampToValueAtTime(.001, t + .18); o.connect(g).connect(ac.destination); o.start(t); o.stop(t + .2); }); }
+
+  const cap = document.getElementById('caption');
+  function loadVoices() { voices = (window.speechSynthesis ? speechSynthesis.getVoices() : []).filter(v => /^fr/i.test(v.lang)); }
+  if (window.speechSynthesis) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+  let token = 0, advTimer = null, voTimer = null;
+  function next() { if (cur < VO.length - 1) scrollToSec(cur + 1); else setTour(false); }
+  let speakTimer = null;
+  function note(msg) { cap.textContent = msg; gsap.to(cap, { opacity: 1, duration: .4 }); }
+  function speak(i) {
+    clearTimeout(speakTimer); speakTimer = setTimeout(() => doSpeak(i), 320);   // laisse le temps au cancel() de se terminer
+  }
+  function doSpeak(i) {
+    const text = VO[i], my = ++token; clearTimeout(advTimer);
+    if (voiceOn) { cap.textContent = text; gsap.to(cap, { opacity: 1, duration: .4 }); } else gsap.to(cap, { opacity: 0, duration: .3 });
+    const est = text.length * 62 + 1800, done = () => { if (my !== token) return; if (tour) advTimer = setTimeout(next, 1100); };
+    if (!('speechSynthesis' in window)) { if (voiceOn) note("Voix off indisponible sur ce navigateur — lis les sous-titres. " + text); if (tour) advTimer = setTimeout(done, est + 1500); return; }
+    speechSynthesis.cancel();
+    if (!voiceOn) { if (tour) advTimer = setTimeout(done, est + 1500); return; }
+    const parts = text.match(/[^.!?:]+[.!?:]?/g).map(x => x.trim()).filter(Boolean);
+    let failed = false;
+    parts.forEach((part, k) => {
+      const u = new SpeechSynthesisUtterance(part); u.lang = 'fr-FR'; u.rate = .96; u.pitch = 1; u.volume = 1;
+      const v = voices.find(v => /google|thomas|amelie|audrey|natural/i.test(v.name)) || voices[0]; if (v) u.voice = v;
+      if (k === parts.length - 1) u.onend = done;
+      u.onerror = e => { if (my !== token || failed) return; failed = true; if (e.error !== 'interrupted' && e.error !== 'canceled') note("La voix n'a pas pu démarrer (" + (e.error || 'erreur') + "). Vérifie le volume et la synthèse vocale de l'appareil. " + text); if (tour) advTimer = setTimeout(done, est); };
+      speechSynthesis.speak(u);
+    });
+    speechSynthesis.resume();
+    advTimer = setTimeout(() => { if (my === token && tour && !speechSynthesis.speaking) done(); }, est + 7000);
+  }
+
+  /* ============ Sections, scroll, UI ============ */
+  const secs = [...document.querySelectorAll('section')], dotsEl = document.getElementById('dots');
+  const heroWord = document.getElementById('heroWord'), btnVoice = document.getElementById('btnVoice'), btnTour = document.getElementById('btnTour');
+  const scrollToSec = i => secs[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+  secs.forEach((s, i) => { const b = document.createElement('button'); b.setAttribute('aria-label', 'Section ' + (i + 1)); b.onclick = () => scrollToSec(i); dotsEl.appendChild(b); });
+  const dots = [...dotsEl.children];
+  function setVoice(on) { voiceOn = on; btnVoice.classList.toggle('on', on); btnVoice.textContent = on ? '🔊 Voix' : '🔇 Voix'; if (on) initAudio(); else { token++; if ('speechSynthesis' in window) speechSynthesis.cancel(); gsap.to(cap, { opacity: 0, duration: .3 }); } }
+  function setTour(on) { tour = on; btnTour.classList.toggle('on', on); btnTour.textContent = on ? '⏸ Visite guidée' : '▶ Visite guidée'; if (on) { if (!voiceOn) setVoice(true); speak(cur); } else clearTimeout(advTimer); }
+  btnVoice.onclick = () => { setVoice(!voiceOn); if (voiceOn) speak(cur); };
+  btnTour.onclick = () => setTour(!tour);
+
+  const counted = new Set();
+  function activate(i) {
+    if (i === cur) return; const prev = cur; cur = i;
+    if (prev >= 0) gsap.to(secs[prev].querySelectorAll('.rv'), { opacity: 0, duration: .35, overwrite: true });
+    gsap.fromTo(secs[i].querySelectorAll('.rv'), { y: 34, opacity: 0 }, { y: 0, opacity: 1, duration: .9, stagger: .09, delay: .35, ease: 'power3.out', overwrite: true });
+    dots.forEach((d, k) => d.classList.toggle('on', k === i));
+    gsap.to(document.documentElement, { '--c1': BG[i][0], '--c2': BG[i][1], duration: 1.2, ease: 'power2.out' });
+    gsap.to(heroWord, { opacity: i === 0 ? 1 : 0, scale: i === 0 ? 1 : .9, duration: 1, ease: 'power2.out' });
+    go(i, prev < 0 ? 0.01 : 1.5);
+    if (i === 2) secs[i].querySelectorAll('[data-count]').forEach(el => { const o = { v: 0 }, n = +el.dataset.count; gsap.to(o, { v: n, duration: 1.4, delay: .5, onUpdate: () => el.textContent = Math.round(o.v) }); });
+    if (i === 4 && prev !== 5) setTimeout(() => cur === 4 && sfxOpen(), 1300);
+    if (i === 5) { setTimeout(() => cur === 5 && sfxPour(), 1500); setTimeout(() => cur === 5 && sfxIce(), 4300); }
+    clearTimeout(voTimer); voTimer = setTimeout(() => speak(i), prev < 0 ? 0 : 600);
+  }
+  secs.forEach((s, i) => ScrollTrigger.create({ trigger: s, start: 'top 50%', end: 'bottom 50%', onToggle: self => { if (self.isActive && started) activate(i); } }));
+  gsap.to('#bgWord', { xPercent: -45, ease: 'none', scrollTrigger: { trigger: document.body, start: 0, end: 'max', scrub: true } });
+
+  /* ============ Boucle de rendu ============ */
+  let t0 = performance.now(), t = 0;
+  const v3 = new THREE.Vector3(), rise = 1;
+  renderer.setAnimationLoop(() => {
+    const now = performance.now(), dt = Math.min((now - t0) / 1000, .05); t0 = now; t += dt;
+    spinAngle += dt * .75 * state.spin;
+    root.position.set(state.x, state.y, 0); root.scale.setScalar(state.s);
+    floatG.position.y = Math.sin(t * 1.4) * .02 * (state.pour > .05 ? 0 : 1);
+    pivot.rotation.set(state.rx, 0, state.rz);
+    can.rotation.y = state.ry + spinAngle + Math.sin(t * .7) * .12 * (1 - state.spin);
+    tabG.rotation.z = state.tab;
+    shadow.position.x = state.x; shadow.material.opacity = state.shadow * (.8 + Math.sin(t * 1.4) * .12); shadow.scale.setScalar(.95 + Math.sin(t * 1.4) * .04);
+
+    // verre
+    glassG.visible = state.glass > .01; glassG.position.y = GB + (1 - state.glass) * .35; glassG.scale.setScalar(.7 + .3 * state.glass);
+    glassMat.opacity = .2 * state.glass; liqMat.opacity = .96 * state.glass; iceMat.opacity = .55 * state.glass;
+    const h = Math.max(.001, state.level * LIQ_H); liquid.scale.y = h; liquid.position.y = .045 + h / 2; liquid.visible = state.level > .005;
+    ice.forEach(m => { const u = m.userData; m.position.set(u.x, .08 + state.level * .17 + Math.sin(t * 1.2 + u.r) * .006, u.z); m.rotation.set(u.r + t * .05, u.r * 2, u.r); });
+
+    // filet de liquide
+    stage.updateMatrixWorld(); mouth.getWorldPosition(v3); stage.worldToLocal(v3);
+    const topY = GB + (1 - state.glass) * .35 + .045 + h * glassG.scale.y, len = Math.max(0, (v3.y - .005 - topY) * Math.min(1, state.pour * 1.6));
+    stream.visible = state.pour > .02 && len > .01 && state.glass > .5;
+    if (stream.visible) { const r = .011 * state.pour + Math.sin(t * 30) * .0008; stream.scale.set(r, len, r); stream.position.set(v3.x, v3.y - len / 2 - .005, 0); }
+
+    // pétales
+    const sy = scrollY / Math.max(1, innerHeight);
+    for (let i = 0; i < PN; i++) { const p = pd[i]; p.y -= p.v * dt; if (p.y < -1.7) { p.y = 1.7; p.x = (Math.random() - .5) * 5; }
+      dummy.position.set(p.x + Math.sin(t * .6 + p.ph) * .15, p.y + L.offY * .5, p.z); dummy.rotation.set(t * p.rs + p.ax, t * p.rs * .7, t * p.rs * .5 + p.ph); dummy.scale.setScalar(p.s * (L.mobile ? .8 : 1)); dummy.updateMatrix(); petals.setMatrixAt(i, dummy.matrix); }
+    petals.instanceMatrix.needsUpdate = true; petals.visible = true;
+    camera.position.x = Math.sin(t * .3) * .04; camera.lookAt(0, 0, 0);
+    renderer.render(scene, camera);
+  });
+
+  /* ============ Entrée ============ */
+  let started = false;
+  function start(withVoice) {
+    started = true; const intro = document.getElementById('intro');
+    if (withVoice) { initAudio(); voiceOn = true; btnVoice.classList.add('on'); btnVoice.textContent = '🔊 Voix'; }
+    else { voiceOn = false; btnVoice.classList.remove('on'); btnVoice.textContent = '🔇 Voix'; }
+    gsap.to(intro, { opacity: 0, duration: .8, onComplete: () => intro.remove() });
+    document.documentElement.classList.remove('locked');
+    // intro : la canette tombe du haut
+    state.y = 2.2; state.s = .6; cur = -1; activate(0);
+    gsap.fromTo(state, { y: 2.2, s: .6 }, { y: 0, s: poses(0).s, duration: 1.8, ease: 'bounce.out', overwrite: 'auto', delay: .2 });
+    gsap.from(heroWord, { yPercent: 12, duration: 1.4, ease: 'power3.out' });
+    gsap.from('header, nav#dots', { opacity: 0, duration: 1, delay: .6 });
+    if (withVoice) setTour(true);
+    ScrollTrigger.refresh();
+  }
+  document.getElementById('goTour').onclick = () => start(true);
+  document.getElementById('goFree').onclick = () => start(false);
+  window.__bssap = { activate, state, start, get cur() { return cur; } };
+  gsap.set(heroWord, { opacity: 0 });
+})();
+</script>
+</body>
+</html>
