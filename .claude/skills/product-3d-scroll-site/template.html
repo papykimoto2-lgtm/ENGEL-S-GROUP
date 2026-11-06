@@ -233,7 +233,7 @@
   const canvas = document.getElementById('stage'); let renderer;
   try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); }
   catch (e) { document.getElementById('err').style.display = 'grid'; return; }
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.setPixelRatio(Math.min(window.__pr || devicePixelRatio || 1, window.__pr ? 3 : 2)); renderer.outputEncoding = THREE.sRGBEncoding;
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
   const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(30, 1, .1, 50);
 
@@ -308,23 +308,28 @@
   const L = { mobile: false, cx: .62, offY: 0, M: 1, dist: 3.3 };
   function layout() {
     const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h;
-    L.mobile = w < 760; L.cx = L.mobile ? 0 : (w / h > 1.25 ? .62 : .42); L.offY = L.mobile ? .4 : .07; L.M = L.mobile ? .92 : 1; L.rit = L.mobile ? .85 : 1.2; L.gs = L.mobile ? 1 : 1.3; L.dist = L.mobile ? 4.8 : (w / h < 1.25 ? 4 : 3.3);
+    L.mobile = w < 760; L.cx = L.mobile ? 0 : (w / h > 1.25 ? .62 : .42); L.sx = 0; L.offY = .07; L.M = 1; L.rit = 1.2; L.gs = 1.3; L.dist = w / h < 1.25 ? 4 : 3.3;
+    if (L.mobile) {   // la canette est centrée dans la zone libre entre l'en-tête et le sous-titre, et la remplit au maximum
+      L.dist = 4.8; const Hw = 2 * L.dist * Math.tan(15 * Math.PI / 180), pxw = Hw / h, topPx = window.__topPx || 66, botPx = window.__botPx || 118, avail = Math.max(200, h - topPx - botPx);
+      let S = (avail * (window.__fill || .86) * pxw) / 1.15; S = Math.min(S, (Hw * (w / h) * .66) / .53);
+      L.M = S / 1.24; L.offY = -((topPx + avail / 2) - h / 2) * pxw - .02; L.rit = Math.min(.95, S * .72); L.gs = 1.05; L.sx = .1;
+    }
     camera.position.set(0, .1, L.dist); camera.lookAt(0, 0, 0); camera.updateProjectionMatrix();
-    stage.position.y = L.offY; glassG.position.x = L.cx + .3;
+    stage.position.y = L.offY; glassG.position.x = L.cx + .3 + L.sx;
   }
   addEventListener('resize', () => { layout(); applyInstant(); }); layout();
 
   /* ============ Poses (une par section) ============ */
   const state = { x: 0, y: 0, ry: 0, rx: 0, rz: 0, s: .01, spin: 1, tab: 0, pour: 0, level: 0, glass: 0, shadow: 1, petal: 1 };
   let spinAngle = 0, cur = -1;
-  const poses = i => { const R = L.cx, M = L.M, S = 1.24 * M, rit = L.rit, gx = R + .3, pourY = -.2544 * rit + .42 * L.gs + .07; return [
+  const poses = i => { const R = L.cx, M = L.M, S = 1.24 * M, rit = L.rit, gx = R + .3 + L.sx, pourY = -.2544 * rit + .42 * L.gs + .07; return [
     { x: 0, y: 0, ry: 0, rx: 0, rz: 0, s: S * .93, spin: 1, tab: 0, pour: 0, level: 0, glass: 0, shadow: 1 },
     { x: -R, y: 0, ry: -.45, rx: 0, rz: .1, s: S, spin: 0, tab: 0, pour: 0, level: 0, glass: 0, shadow: 1 },
     { x: R, y: 0, ry: Math.PI, rx: 0, rz: -.05, s: S, spin: 0, tab: 0, pour: 0, level: 0, glass: 0, shadow: 1 },
     { x: -R, y: 0, ry: .35, rx: 0, rz: 0, s: S, spin: 0, tab: 0, pour: 0, level: 0, glass: 0, shadow: 1 },
     { x: R, y: 0, ry: 0, rx: 1.05, rz: 0, s: S * .95, spin: 0, tab: .6, pour: 0, level: 0, glass: 0, shadow: 0 },
     { x: gx - .46 * rit, y: pourY, ry: 0, rx: 0, rz: -2, s: rit, spin: 0, tab: .6, pour: 1, level: .8, glass: 1, shadow: 0 },
-    { x: R - .34, y: 0, ry: .4, rx: 0, rz: 0, s: rit, spin: 0, tab: .6, pour: 0, level: .8, glass: 1, shadow: 1 },
+    { x: R - .34 + L.sx * .6, y: 0, ry: .4, rx: 0, rz: 0, s: rit, spin: 0, tab: .6, pour: 0, level: .8, glass: 1, shadow: 1 },
     { x: -R, y: 0, ry: 0, rx: 0, rz: 0, s: S, spin: 1, tab: .6, pour: 0, level: 0, glass: 0, shadow: 1 }][i]; };
   function applyInstant() { if (cur < 0) return; const p = poses(cur); gsap.killTweensOf(state); Object.assign(state, p); spinAngle = 0; }
   function go(i, dur) {
@@ -360,7 +365,7 @@
   }
   function doSpeak(i) {
     const text = VO[i], my = ++token; clearTimeout(advTimer);
-    if (voiceOn) { cap.textContent = text; gsap.to(cap, { opacity: 1, duration: .4 }); } else gsap.to(cap, { opacity: 0, duration: .3 });
+    if (voiceOn && !L.mobile) { cap.textContent = text; gsap.to(cap, { opacity: 1, duration: .4 }); } else gsap.to(cap, { opacity: 0, duration: .3 });
     const est = text.length * 62 + 1800, done = () => { if (my !== token) return; if (tour) advTimer = setTimeout(next, 1100); };
     if (!('speechSynthesis' in window)) { if (voiceOn) note("Voix off indisponible sur ce navigateur — lis les sous-titres. " + text); if (tour) advTimer = setTimeout(done, est + 1500); return; }
     speechSynthesis.cancel();
@@ -448,7 +453,7 @@
       const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line'); ln.setAttribute('opacity', 0); coSvg.appendChild(ln);
       cos.push({ el, ln, lab: el.querySelector('.lab'), p: new THREE.Vector3(...c.p), n: new THREE.Vector3(...c.n).normalize(), k, a: 0, nums: [...el.querySelectorAll('[data-n]')], counted: false });
     });
-    coShowAt = performance.now() + 1500;
+    coShowAt = performance.now() + (window.__coDelay != null ? window.__coDelay : 1500);
   }
   const vp = new THREE.Vector3(), vn = new THREE.Vector3(), vv = new THREE.Vector3();
   function updateCallouts() {
