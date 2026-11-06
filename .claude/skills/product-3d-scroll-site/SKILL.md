@@ -21,6 +21,10 @@ Modèle de référence : `template.html` (dans ce dossier) = le site B'ssap comp
 4. **Vérifier** avec Playwright (Chromium est préinstallé) : le CDN est bloqué dans le bac à sable, donc installer `three@0.128.0` et `gsap@3.12.2` avec npm dans le dossier temporaire, remplacer les URL du CDN par des chemins `file://` dans une copie de test, lancer avec `--use-gl=swiftshader --enable-unsafe-swiftshader`, capturer chaque scène sur bureau (1280x720) ET mobile (390x800), corriger cadrage et chevauchements.
 5. **Livrer** : publier avec l'outil Artifact (garder l'URL pour les mises à jour), envoyer le `index.html` avec SendUserFile, committer et pousser sur la branche désignée. Dire honnêtement ce qui n'a pas pu être testé (voix, sons, photos externes).
 
+## Système de texte du modèle (produit en vedette)
+- Pas de panneaux de texte : un **sous-titre court** en bas (`SC[i].l`), des **légendes reliées au produit** (`SC[i].co`, ancres 3D dans le repère de la canette via `aP(angle, y)`), et un **mot-clé géant derrière le produit** pour les scènes d'action (`SC[i].kw`, effet rebond + glitch).
+- Garder le produit à ~80 % de la hauteur d'écran, les textes petits.
+
 ## Règles apprises (à respecter)
 
 - **Voix off** : `speechSynthesis` n'existe pas dans le navigateur intégré de l'app Claude et sonne robotisé ailleurs. Toujours proposer de vraies voix (ElevenLabs, un mp3 par scène, lecture avec `new Audio()`), garder les sous-titres. Après `speechSynthesis.cancel()`, attendre ~300 ms avant de reparler, et lire phrase par phrase. Les générations gratuites ElevenLabs peuvent être saturées : ne pas relancer en boucle, ne pas facturer.

@@ -58,6 +58,22 @@
     .panel { max-width:none; } h2 { font-size:clamp(22px,6.4vw,28px); margin-bottom:6px; } nav#dots { right:8px; gap:9px; }
     .logo small { display:none; } .stats { margin:14px 0; gap:8px; } .scrollhint { bottom:96px; } p { font-size:14.5px; margin-bottom:8px; }
   }
+
+  #caption { top:62px !important; bottom:auto !important; font-size:12px !important; padding:6px 14px !important; max-width:min(620px,90vw) !important; }
+  #kw { position:fixed; left:0; right:0; top:46%; z-index:0; pointer-events:none; text-align:center; font-family:"Fredoka",sans-serif; font-weight:700; font-size:min(24vw,36vh); line-height:1; color:#fff; letter-spacing:-.02em; opacity:0; text-shadow:0 18px 60px rgba(60,0,0,.35); white-space:nowrap; }
+  #callouts { position:fixed; inset:0; z-index:3; pointer-events:none; }
+  #coSvg line { stroke:rgba(255,255,255,.9); stroke-width:1.5; }
+  .co { position:absolute; left:0; top:0; opacity:0; will-change:transform,opacity; }
+  .co .dot { position:absolute; width:11px; height:11px; margin:-5.5px 0 0 -5.5px; border-radius:50%; background:#fff; box-shadow:0 0 0 4px rgba(255,255,255,.28); }
+  .co .lab { position:absolute; white-space:nowrap; background:#fff; color:#8a0f1a; font:700 13px "Barlow",sans-serif; padding:7px 13px; border-radius:999px; box-shadow:0 8px 24px rgba(40,0,0,.35); }
+  .co .lab b { font-family:"Fredoka",sans-serif; font-weight:700; }
+  #sub { position:fixed; left:0; right:0; bottom:4.5vh; z-index:4; text-align:center; pointer-events:none; padding:0 6vw; }
+  #subK { font-size:11px; letter-spacing:.3em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; font-weight:600; opacity:0; }
+  #subL { font-family:"Fredoka",sans-serif; font-weight:700; font-size:clamp(20px,2.5vw,32px); line-height:1.15; display:flex; flex-wrap:wrap; justify-content:center; gap:0 .3em; text-shadow:0 3px 18px rgba(60,0,0,.45); }
+  #subL .w { display:inline-block; overflow:hidden; padding-bottom:.12em; } #subL .w > span { display:inline-block; }
+  #subCta { display:none; justify-content:center; gap:8px; margin-top:14px; } #subCta .btn { pointer-events:auto; }
+  #hint { margin-top:12px; font-size:11px; letter-spacing:.3em; text-transform:uppercase; color:var(--muted); display:none; animation:bob 1.8s ease-in-out infinite; }
+  @media (max-width:760px) { #sub { bottom:5.5vh; } #subL { font-size:clamp(18px,5.4vw,24px); } .co .lab { font-size:11.5px; padding:5px 10px; } #caption { top:56px !important; } }
 </style>
 </head>
 <body class="">
@@ -71,37 +87,19 @@
 </header>
 <nav id="dots"></nav>
 <div id="caption"></div>
+<div id="kw"></div>
+<div id="callouts"><svg id="coSvg" width="100%" height="100%"></svg></div>
+<div id="sub"><div id="subK"></div><div id="subL"></div><div id="subCta"><a class="btn" href="#">Où nous trouver</a><a class="btn ghost" href="#">Nous contacter</a></div><div id="hint">Scrolle ↓</div></div>
 
 <main>
-  <section class="left" data-i="0" style="align-items:flex-end;padding-bottom:13vh">
-    <div class="panel"><p class="rv" style="font-size:clamp(17px,1.8vw,24px);color:#fff;margin:0">Le goût du hibiscus, version slim.</p></div>
-    <div class="scrollhint">Scrolle ↓</div>
-  </section>
-  <section class="right" data-i="1"><div class="panel">
-    <div class="kicker rv">01 — L'infusion</div><h2 class="rv">Fleur de caractère.</h2>
-    <p class="rv">Des fleurs d'hibiscus infusées lentement. Un rouge profond, une fraîcheur franche, une pointe d'acidité.</p>
-    <p class="rv">Pas de fioritures : juste le goût du bissap, bien frais.</p></div></section>
-  <section class="left" data-i="2"><div class="panel">
-    <div class="kicker rv">02 — La recette</div><h2 class="rv">Rien à cacher.</h2>
-    <div class="stats">
-      <div class="stat rv"><b data-count="9">0</b><span>kcal / 100 ml</span></div>
-      <div class="stat rv"><b data-count="4">0</b><span>ingrédients</span></div>
-      <div class="stat rv"><b data-count="1">0</b><span>g matières grasses</span></div></div>
-    <p class="rv">Eau, extrait d'hibiscus, sucre, arômes naturels. C'est tout.</p></div></section>
-  <section class="right" data-i="3"><div class="panel">
-    <div class="kicker rv">03 — Le format</div><h2 class="rv">33cl slim.</h2>
-    <p class="rv">Fine et légère, elle se glisse partout : dans un sac, une glacière, une main. Et une fois vide, elle se recycle.</p>
-    <div class="specs rv"><div><b>115 mm</b><span>hauteur</span></div><div><b>Ø 53 mm</b><span>diamètre</span></div><div><b>33 cl</b><span>volume</span></div></div></div></section>
-  <section class="left ritual" data-i="4"><div class="panel">
-    <div class="kicker rv">04 — Le rituel</div><h2 class="rv"><span class="on">Ouvrir.</span><span>Verser.</span><span>Savourer.</span></h2><p class="rv">Un clic, et la fraîcheur s'échappe.</p></div></section>
-  <section class="left ritual" data-i="5"><div class="panel">
-    <div class="kicker rv">04 — Le rituel</div><h2 class="rv"><span>Ouvrir.</span><span class="on">Verser.</span><span>Savourer.</span></h2><p class="rv">Lentement, sur des glaçons.</p></div></section>
-  <section class="left ritual" data-i="6"><div class="panel">
-    <div class="kicker rv">04 — Le rituel</div><h2 class="rv"><span>Ouvrir.</span><span>Verser.</span><span class="on">Savourer.</span></h2><p class="rv">Sur glaçons, c'est encore meilleur.</p></div></section>
-  <section class="right" data-i="7"><div class="panel">
-    <div class="kicker rv">05 — Où nous trouver</div><h2 class="rv">À portée de main.</h2>
-    <p class="rv">Retrouve B'ssap près de chez toi, ou écris-nous pour en commander.</p>
-    <div class="cta rv" style="justify-content:flex-start"><a class="btn" href="#">Où nous trouver</a><a class="btn ghost" href="#">Nous contacter</a></div></div></section>
+  <section data-i="0"></section>
+  <section data-i="1"></section>
+  <section data-i="2"></section>
+  <section data-i="3"></section>
+  <section data-i="4"></section>
+  <section data-i="5"></section>
+  <section data-i="6"></section>
+  <section data-i="7"></section>
 </main>
 
 <div id="intro">
@@ -310,7 +308,7 @@
   const L = { mobile: false, cx: .62, offY: 0, M: 1, dist: 3.3 };
   function layout() {
     const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h;
-    L.mobile = w < 760; L.cx = L.mobile ? 0 : (w / h > 1.25 ? .62 : .42); L.offY = L.mobile ? .4 : 0; L.M = L.mobile ? .92 : 1; L.rit = L.mobile ? .85 : 1.2; L.gs = L.mobile ? 1 : 1.3; L.dist = L.mobile ? 4.8 : (w / h < 1.25 ? 4 : 3.3);
+    L.mobile = w < 760; L.cx = L.mobile ? 0 : (w / h > 1.25 ? .62 : .42); L.offY = L.mobile ? .4 : .07; L.M = L.mobile ? .92 : 1; L.rit = L.mobile ? .85 : 1.2; L.gs = L.mobile ? 1 : 1.3; L.dist = L.mobile ? 4.8 : (w / h < 1.25 ? 4 : 3.3);
     camera.position.set(0, .1, L.dist); camera.lookAt(0, 0, 0); camera.updateProjectionMatrix();
     stage.position.y = L.offY; glassG.position.x = L.cx + .3;
   }
@@ -319,7 +317,7 @@
   /* ============ Poses (une par section) ============ */
   const state = { x: 0, y: 0, ry: 0, rx: 0, rz: 0, s: .01, spin: 1, tab: 0, pour: 0, level: 0, glass: 0, shadow: 1, petal: 1 };
   let spinAngle = 0, cur = -1;
-  const poses = i => { const R = L.cx, M = L.M, S = 1.3 * M, rit = L.rit, gx = R + .3, pourY = -.2544 * rit + .42 * L.gs + .07; return [
+  const poses = i => { const R = L.cx, M = L.M, S = 1.24 * M, rit = L.rit, gx = R + .3, pourY = -.2544 * rit + .42 * L.gs + .07; return [
     { x: 0, y: 0, ry: 0, rx: 0, rz: 0, s: S * .93, spin: 1, tab: 0, pour: 0, level: 0, glass: 0, shadow: 1 },
     { x: -R, y: 0, ry: -.45, rx: 0, rz: .1, s: S, spin: 0, tab: 0, pour: 0, level: 0, glass: 0, shadow: 1 },
     { x: R, y: 0, ry: Math.PI, rx: 0, rz: -.05, s: S, spin: 0, tab: 0, pour: 0, level: 0, glass: 0, shadow: 1 },
@@ -399,7 +397,7 @@
     dots.forEach((d, k) => d.classList.toggle('on', k === i));
     gsap.to(document.documentElement, { '--c1': BG[i][0], '--c2': BG[i][1], duration: 1.2, ease: 'power2.out' });
     gsap.to(heroWord, { opacity: i === 0 ? 1 : 0, scale: i === 0 ? 1 : .9, duration: 1, ease: 'power2.out' });
-    go(i, prev < 0 ? 0.01 : 1.5);
+    go(i, prev < 0 ? 0.01 : 1.5); setSub(i); setKw(i); buildCallouts(i);
     if (i === 2) secs[i].querySelectorAll('[data-count]').forEach(el => { const o = { v: 0 }, n = +el.dataset.count; gsap.to(o, { v: n, duration: 1.4, delay: .5, onUpdate: () => el.textContent = Math.round(o.v) }); });
     if (i === 4 && prev !== 5) setTimeout(() => cur === 4 && sfxOpen(), 1300);
     if (i === 5) { setTimeout(() => cur === 5 && sfxPour(), 1500); setTimeout(() => cur === 5 && sfxIce(), 4300); }
@@ -407,6 +405,67 @@
   }
   secs.forEach((s, i) => ScrollTrigger.create({ trigger: s, start: 'top 50%', end: 'bottom 50%', onToggle: self => { if (self.isActive && started) activate(i); } }));
   gsap.to('#bgWord', { xPercent: -45, ease: 'none', scrollTrigger: { trigger: document.body, start: 0, end: 'max', scrub: true } });
+
+
+  /* ============ Texte nouvelle génération : sous-titre court + mots-clés + légendes reliées au produit ============ */
+  const RAD = .265, aP = (deg, y) => { const a = deg * Math.PI / 180; return { p: [RAD * Math.sin(a), y, RAD * Math.cos(a)], n: [Math.sin(a), 0, Math.cos(a)] }; };
+  const SC = [
+    { k: '', l: "Le goût du hibiscus, version slim.", hint: true },
+    { k: "01 — L'infusion", l: "Des fleurs d'hibiscus infusées lentement.", co: [{ t: "Fleurs d'hibiscus", ...aP(-19, .19) }, { t: "Sceau « Naturellement »", ...aP(-36, .36) }] },
+    { k: "02 — La recette", l: "Rien à cacher. C'est tout.", co: [{ t: '<b data-n="9">0</b> kcal / 100 ml', ...aP(180, -.06) }, { t: "Eau · hibiscus · sucre · arômes", ...aP(180, .24) }, { t: "♻ À recycler", ...aP(151, -.3) }] },
+    { k: "03 — Le format", l: "33 cl slim. Fine et légère.", co: [{ t: "115 mm de haut", p: [0, .42, .2], n: [0, .3, 1] }, { t: "Ø 53 mm", ...aP(76, 0) }, { t: "33 cl", ...aP(-4, -.33) }] },
+    { k: "04 — Le rituel", l: "Un clic, et la fraîcheur s'échappe.", kw: "Ouvrir.", co: [{ t: "Languette", p: [-.01, .558, 0], n: [0, 1, 0] }, { t: "Aluminium recyclable", p: [.2, .548, .08], n: [.3, 1, .2] }] },
+    { k: "04 — Le rituel", l: "Lentement, sur des glaçons.", kw: "Verser." },
+    { k: "04 — Le rituel", l: "Sur glaçons, c'est encore meilleur.", kw: "Savourer." },
+    { k: "05 — Où nous trouver", l: "À portée de main.", cta: true }
+  ];
+  gsap.set('#kw', { yPercent: -50 }); const subK = document.getElementById('subK'), subL = document.getElementById('subL'), subCta = document.getElementById('subCta'), hint = document.getElementById('hint'), kw = document.getElementById('kw');
+  function setSub(i) {
+    const c = SC[i]; subK.textContent = c.k; gsap.to(subK, { opacity: c.k ? 1 : 0, duration: .5, overwrite: true });
+    subL.innerHTML = c.l.split(' ').map(w => `<span class="w"><span>${w}</span></span>`).join('');
+    gsap.fromTo('#subL .w > span', { yPercent: 120 }, { yPercent: 0, duration: .7, stagger: .06, delay: .35, ease: 'power4.out', overwrite: true });
+    subCta.style.display = c.cta ? 'flex' : 'none'; hint.style.display = c.hint ? 'block' : 'none';
+    if (c.cta) gsap.fromTo(subCta, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: .6, delay: .9 });
+  }
+  function setKw(i) {
+    const c = SC[i]; gsap.killTweensOf(kw);
+    if (!c.kw) { gsap.to(kw, { opacity: 0, duration: .4 }); return; }
+    kw.textContent = c.kw;
+    gsap.timeline()
+      .fromTo(kw, { opacity: 0, scale: 1.45, y: 40, textShadow: '0 0 0 rgba(0,0,0,0)' }, { opacity: 1, scale: 1, y: 0, duration: .45, ease: 'back.out(2.4)', delay: .25 })
+      .to(kw, { textShadow: '10px 0 0 rgba(0,224,255,.85), -10px 0 0 rgba(255,0,80,.85)', duration: .06 })
+      .to(kw, { textShadow: '-7px 3px 0 rgba(0,224,255,.8), 7px -3px 0 rgba(255,0,80,.8)', duration: .06 })
+      .to(kw, { textShadow: '4px 0 0 rgba(0,224,255,.7), -4px 0 0 rgba(255,0,80,.7)', duration: .06 })
+      .to(kw, { textShadow: '0 18px 60px rgba(60,0,0,.35)', duration: .12 })
+      .to(kw, { opacity: .16, duration: .9, delay: .8, ease: 'power2.inOut' });
+  }
+  const coBox = document.getElementById('callouts'), coSvg = document.getElementById('coSvg'); let cos = [], coShowAt = 0;
+  function buildCallouts(i) {
+    cos.forEach(o => o.el.remove()); cos.forEach(o => o.ln.remove()); cos = []; coSvg.innerHTML = '';
+    const list = (SC[i].co || []).slice(0, L.mobile ? 2 : 3);
+    list.forEach((c, k) => {
+      const el = document.createElement('div'); el.className = 'co'; el.innerHTML = `<div class="dot"></div><div class="lab">${c.t}</div>`; coBox.appendChild(el);
+      const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line'); ln.setAttribute('opacity', 0); coSvg.appendChild(ln);
+      cos.push({ el, ln, lab: el.querySelector('.lab'), p: new THREE.Vector3(...c.p), n: new THREE.Vector3(...c.n).normalize(), k, a: 0, nums: [...el.querySelectorAll('[data-n]')], counted: false });
+    });
+    coShowAt = performance.now() + 1500;
+  }
+  const vp = new THREE.Vector3(), vn = new THREE.Vector3(), vv = new THREE.Vector3();
+  function updateCallouts() {
+    if (!cos.length) return; const W = innerWidth, H = innerHeight, now = performance.now(); can.updateWorldMatrix(true, false);
+    const cx = (new THREE.Vector3(0, 0, 0)).applyMatrix4(can.matrixWorld).project(camera).x * W / 2 + W / 2;
+    cos.forEach(o => {
+      vp.copy(o.p).applyMatrix4(can.matrixWorld); vn.copy(o.n).transformDirection(can.matrixWorld); vv.copy(camera.position).sub(vp).normalize();
+      const facing = vn.dot(vv) > .22, target = (now > coShowAt && facing) ? 1 : 0; o.a += (target - o.a) * .12;
+      vp.project(camera); const ax = vp.x * W / 2 + W / 2, ay = -vp.y * H / 2 + H / 2, side = ax < cx ? -1 : 1, dx = (L.mobile ? 46 : 96), dy = (o.k - 1) * (L.mobile ? 34 : 40);
+      const lw = o.lab.offsetWidth, lh = o.lab.offsetHeight; let lx = ax + side * dx, ly = ay + dy;
+      const minX = 8 + (side < 0 ? lw : 0), maxX = W - 8 - (side > 0 ? lw : 0); lx = Math.max(minX, Math.min(maxX, lx));
+      o.el.style.opacity = o.a; o.el.style.transform = `translate(${ax}px,${ay}px)`;
+      o.lab.style.left = (side < 0 ? lx - ax - lw : lx - ax) + 'px'; o.lab.style.top = (ly - ay - lh / 2) + 'px';
+      o.ln.setAttribute('x1', ax); o.ln.setAttribute('y1', ay); o.ln.setAttribute('x2', lx); o.ln.setAttribute('y2', ly); o.ln.setAttribute('opacity', o.a);
+      if (o.a > .5 && !o.counted && o.nums.length) { o.counted = true; o.nums.forEach(b => { const ob = { v: 0 }, n = +b.dataset.n; gsap.to(ob, { v: n, duration: 1.2, onUpdate: () => b.textContent = Math.round(ob.v) }); }); }
+    });
+  }
 
   /* ============ Boucle de rendu ============ */
   let t0 = performance.now(), t = 0;
@@ -438,7 +497,7 @@
     for (let i = 0; i < PN; i++) { const p = pd[i]; p.y -= p.v * dt; if (p.y < -1.7) { p.y = 1.7; p.x = (Math.random() - .5) * 5; }
       dummy.position.set(p.x + Math.sin(t * .6 + p.ph) * .15, p.y + L.offY * .5, p.z); dummy.rotation.set(t * p.rs + p.ax, t * p.rs * .7, t * p.rs * .5 + p.ph); dummy.scale.setScalar(p.s * (L.mobile ? .8 : 1)); dummy.updateMatrix(); petals.setMatrixAt(i, dummy.matrix); }
     petals.instanceMatrix.needsUpdate = true; petals.visible = true;
-    camera.position.x = Math.sin(t * .3) * .04; camera.lookAt(0, 0, 0);
+    camera.position.x = Math.sin(t * .3) * .04; camera.lookAt(0, 0, 0); camera.updateMatrixWorld(); stage.updateMatrixWorld(true); updateCallouts();
     renderer.render(scene, camera);
   });
 
